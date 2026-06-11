@@ -102,6 +102,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+import dj_database_url
+
+DATABASES = {
+    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
+}
 
 LANGUAGE_CODE = 'fr-fr'
 TIME_ZONE = 'Africa/Conakry'
