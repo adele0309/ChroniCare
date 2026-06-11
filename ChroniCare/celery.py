@@ -12,6 +12,13 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 
+# ── Task de healthcheck ──────────────────────────────────────────────────────
+@app.task(name='ChroniCare.ping')
+def ping():
+    """Test de bout-en-bout : doit renvoyer 'pong' une fois exécutée par un worker."""
+    return 'pong'
+
+
 # ── Planification Beat ────────────────────────────────────────────────────────
 app.conf.beat_schedule = {
 

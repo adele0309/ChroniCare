@@ -11,7 +11,7 @@ class Maladie(models.Model):
        ('respiratoire', 'Respiratoire'),
        ('cardiovasculaire', 'cardiovasculaire'),
        ('neurologique', 'Neurologique'),
-       ('auto-immune ', 'auto-immune'),
+       ('auto-immune', 'auto-immune'),
        ('rénale','rénale' ),
        ('autre', 'Autre'),
 

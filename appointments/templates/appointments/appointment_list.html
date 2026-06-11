@@ -147,9 +147,9 @@
                 </a>
               {% endif %}
 
-              {# Suivi médical : affiché si effectué — lien vers suivi-create (URL existante) #}
-              {% if a.status == 'effectue' %}
-                <a href="{% url 'suivi-list' %}" class="cc-btn btn-suivi" title="Voir les suivis">
+              {# Suivi médical : créer depuis ce RDV (doctor/admin seulement) #}
+              {% if a.status == 'effectue' and request.user.role == 'admin' or a.status == 'effectue' and request.user.role == 'doctor' %}
+                <a href="{% url 'suivi-create-from-rdv' a.id %}" class="cc-btn btn-suivi" title="Créer un suivi médical">
                   <i class="ti ti-stethoscope"></i>
                 </a>
               {% endif %}

@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
@@ -126,21 +127,19 @@ class DispensationViewSet(viewsets.ModelViewSet):
 
 @role_required("pharmacist", "admin")
 def pharmacie_dashboard(request):
-    prescriptions_urgentes = Prescription.objects.filter(
+    urgentes_qs = Prescription.objects.filter(
         statut__in=['en_attente', 'active'],
         date_prochain_renouvellement__lte=timezone.now().date() + timedelta(days=7),
-    ).select_related('patient')[:5]
-    prescriptions_recentes = Prescription.objects.select_related('patient')[:5]
+    ).select_related('patient')
     medications_critique = [m for m in Medication.objects.prefetch_related('lots') if m.est_en_rupture]
     dispensations_recentes = Dispensation.objects.select_related(
         'prescription__patient', 'pharmacien'
     )[:5]
     return render(request, "pharmacie/dashboard.html", {
-        "prescriptions_urgentes":  prescriptions_urgentes,
-        "prescriptions_recentes":  prescriptions_recentes,
+        "prescriptions_urgentes":  urgentes_qs[:5],
         "medications_critique":    medications_critique,
         "dispensations_recentes":  dispensations_recentes,
-        "nb_renouvellements":      prescriptions_urgentes.count(),
+        "nb_renouvellements":      urgentes_qs.count(),
         "nb_ruptures":             len(medications_critique),
     })
 
@@ -181,14 +180,22 @@ def dispensation_list(request):
     })
 
 
-@role_required("admin", "doctor", "pharmacist")
+@login_required
 def prescription_detail(request, pk):
+    user = request.user
+    role = getattr(user, 'role', None)
+    if role not in ('admin', 'doctor', 'pharmacist', 'patient'):
+        raise PermissionDenied
     prescription = get_object_or_404(
         Prescription.objects.select_related('patient', 'medecin', 'maladie', 'suivi_medical')
         .prefetch_related('items__medication', 'dispensations__pharmacien'),
         pk=pk,
     )
-    ruptures = check_stock_disponible(prescription)
+    if role == 'patient':
+        patient_user = getattr(prescription.patient, 'compte_patient', None)
+        if patient_user is None or patient_user.pk != user.pk:
+            raise PermissionDenied
+    ruptures = check_stock_disponible(prescription) if role != 'patient' else []
     return render(request, "pharmacie/prescription_detail.html", {
         "prescription": prescription,
         "ruptures":     ruptures,
@@ -299,13 +306,21 @@ def dispenser(request, prescription_id):
     return redirect('dispensation-detail', pk=dispensation.pk)
 
 
-@role_required("pharmacist", "admin")
+@login_required
 def dispensation_pdf(request, pk):
+    user = request.user
+    role = getattr(user, 'role', None)
+    if role not in ('admin', 'pharmacist', 'patient'):
+        raise PermissionDenied
     dispensation = get_object_or_404(
         Dispensation.objects.select_related('prescription__patient', 'prescription__medecin')
         .prefetch_related('items__medication'),
         pk=pk,
     )
+    if role == 'patient':
+        patient_user = getattr(dispensation.prescription.patient, 'compte_patient', None)
+        if patient_user is None or patient_user.pk != user.pk:
+            raise PermissionDenied
     prescription = dispensation.prescription
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="dispensation_{pk}.pdf"'

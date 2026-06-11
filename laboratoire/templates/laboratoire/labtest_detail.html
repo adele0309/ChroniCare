@@ -125,9 +125,11 @@
       <a href="{% url 'labtest-result' test.pk %}" class="btn-cc btn-primary">
         <i class="ti ti-edit"></i> Saisir le résultat
       </a>
+      {% if test.valeur is not None or test.resultat %}
       <a href="{% url 'labtest-validate' test.pk %}" class="btn-cc btn-success">
         <i class="ti ti-check"></i> Valider l'analyse
       </a>
+      {% endif %}
     {% endif %}
   {% endif %}
   {% if request.user.role == 'doctor' or request.user.role == 'admin' %}

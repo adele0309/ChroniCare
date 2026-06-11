@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -158,7 +160,10 @@ def appointment_calendar(request):
             "color": color,
         })
 
-    return render(request, "appointments/calendar.html", {"events": events})
+    return render(request, "appointments/calendar.html", {
+        "events": events,
+        "events_json": json.dumps(events),
+    })
 
 
 @login_required

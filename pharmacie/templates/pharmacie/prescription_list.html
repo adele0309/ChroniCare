@@ -32,9 +32,11 @@
 <div class="cc-card">
   <div class="cc-card-header">
     <h3 class="cc-card-title"><i class="ti ti-prescription"></i> Prescriptions</h3>
+    {% if request.user.role == 'pharmacist' or request.user.role == 'admin' %}
     <a href="{% url 'pharmacie-dashboard' %}" class="btn-cc btn-secondary">
       <i class="ti ti-arrow-left"></i> Retour
     </a>
+    {% endif %}
   </div>
 
   <table class="cc-table">

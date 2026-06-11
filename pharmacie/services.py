@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import transaction
 from django.utils import timezone
 from alertes_notifications.services import create_alert, create_notification
@@ -112,7 +114,6 @@ def deliver_prescription_service(prescription, user, periode=None):
             quantite_restante -= prendre
 
     # Mise à jour statut et prochain renouvellement
-    from datetime import timedelta
     prescription.statut = 'active'
     prescription.date_prochain_renouvellement = (
         timezone.now().date() + timedelta(days=prescription.duree_standard)
@@ -181,7 +182,7 @@ def notifier_renouvellements_imminents():
     """
     from .models import Prescription, Dispensation
     aujourd_hui = timezone.now().date()
-    dans_7_jours = aujourd_hui + __import__('datetime').timedelta(days=7)
+    dans_7_jours = aujourd_hui + timedelta(days=7)
 
     prescriptions = Prescription.objects.filter(
         statut__in=['en_attente', 'active'],

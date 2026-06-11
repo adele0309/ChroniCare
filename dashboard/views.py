@@ -182,7 +182,10 @@ def medecin_dashboard(request):
         'my_consultations':      my_suivis.count(),
         'patients_count':        Patient.objects.count(),
         'alerts_count':          Alert.objects.filter(is_resolved=False).count(),
-        'today_appointments':    Appointment.objects.filter(doctor=request.user).order_by('-id')[:8],
+        'today_appointments':    Appointment.objects.filter(
+                                     doctor=request.user,
+                                     date__gte=date.today(),
+                                 ).exclude(status='annule').order_by('date', 'heure')[:8],
         'critical_alerts':       critical_alerts,
         # Chart.js — constantes vitales (Python lists, rendered via json_script in template)
         'vitals_labels':    [s['created_at'].strftime('%d/%m/%y') for s in vitals_list],
@@ -223,7 +226,7 @@ def patient_dashboard(request):
         profil    = request.user.profil_patient
         my_appts  = Appointment.objects.filter(patient=profil).order_by('-id')[:5]
         my_alerts = Alert.objects.filter(patient=profil).order_by('-id')[:5]
-    except Exception:
+    except Patient.DoesNotExist:
         pass
     return render(request, 'dashboard/patient_dashboard.html', {
         'page_title':      "Mon espace",
@@ -284,13 +287,14 @@ def api_vitals_evolution(request, patient_id):
                 'tension_diastolique', 'hemoglobine', 'poids', 'cholesterol')
     )
     return JsonResponse({
-        'patient':            str(patient),
-        'labels':             [s['created_at'].strftime('%d/%m/%Y') for s in suivis],
-        'glycemie':           [s['glycemie'] for s in suivis],
-        'tension_systolique': [s['tension_systolique'] for s in suivis],
-        'tension_diastolique':[s['tension_diastolique'] for s in suivis],
-        'hemoglobine':        [s['hemoglobine'] for s in suivis],
-        'poids':              [s['poids'] for s in suivis],
+        'patient':             str(patient),
+        'labels':              [s['created_at'].strftime('%d/%m/%Y') for s in suivis],
+        'glycemie':            [s['glycemie'] for s in suivis],
+        'tension_systolique':  [s['tension_systolique'] for s in suivis],
+        'tension_diastolique': [s['tension_diastolique'] for s in suivis],
+        'hemoglobine':         [s['hemoglobine'] for s in suivis],
+        'poids':               [s['poids'] for s in suivis],
+        'cholesterol':         [s['cholesterol'] for s in suivis],
     })
 
 

@@ -19,7 +19,10 @@ class SuiviMedicalSerializer(serializers.ModelSerializer):
             'medecin', 'medecin_nom',
             'poids', 'taille', 'imc',
             'tension_systolique', 'tension_diastolique',
-            'glycemie', 'cd4', 'charge_virale',
+            'glycemie',
+            'hemoglobine', 'cholesterol',
+            'creatinine', 'uree', 'transaminases',
+            'cd4', 'charge_virale',
             'observations',
             'statut', 'statut_label',
             'created_at',
@@ -35,5 +38,11 @@ class SuiviMedicalSerializer(serializers.ModelSerializer):
         if data.get('cd4') and data['cd4'] < 200:
             data['statut'] = 'critique'
         if data.get('charge_virale') and data['charge_virale'] > 1000:
+            data['statut'] = 'critique'
+        if data.get('hemoglobine') is not None and data['hemoglobine'] < 7.0:
+            data['statut'] = 'critique'
+        if data.get('cholesterol') is not None and data['cholesterol'] > 3.0:
+            data['statut'] = 'critique'
+        if data.get('creatinine') is not None and data['creatinine'] > 20.0:
             data['statut'] = 'critique'
         return data

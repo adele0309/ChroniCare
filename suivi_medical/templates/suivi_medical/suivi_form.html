@@ -233,6 +233,8 @@
         <i class="ti ti-flask"></i><h3>Résultats biologiques</h3>
       </div>
       <div class="cc-section-body">
+
+        {# Glycémie / CD4 / Charge virale #}
         <div class="cc-form-grid-3">
           <div class="cc-field">
             <label for="{{ form.glycemie.id_for_label }}">Glycémie (g/L)</label>
@@ -242,14 +244,48 @@
           <div class="cc-field">
             <label for="{{ form.cd4.id_for_label }}">CD4 (cells/mm³)</label>
             {{ form.cd4 }}
-            <span class="cc-field-hint">Normal : > 500</span>
+            <span class="cc-field-hint">Normal : &gt; 500</span>
           </div>
           <div class="cc-field">
             <label for="{{ form.charge_virale.id_for_label }}">Charge virale (copies/mL)</label>
             {{ form.charge_virale }}
-            <span class="cc-field-hint">Indétectable : < 40</span>
+            <span class="cc-field-hint">Indétectable : &lt; 40</span>
           </div>
         </div>
+
+        {# Hémoglobine / Cholestérol #}
+        <div class="cc-form-grid" style="margin-top:14px;">
+          <div class="cc-field">
+            <label for="{{ form.hemoglobine.id_for_label }}">Hémoglobine (g/dL)</label>
+            {{ form.hemoglobine }}
+            <span class="cc-field-hint">Normal : 12 – 17 g/dL</span>
+          </div>
+          <div class="cc-field">
+            <label for="{{ form.cholesterol.id_for_label }}">Cholestérol (g/L)</label>
+            {{ form.cholesterol }}
+            <span class="cc-field-hint">Normal : &lt; 2.0 g/L</span>
+          </div>
+        </div>
+
+        {# Créatinine / Urée / Transaminases #}
+        <div class="cc-form-grid-3" style="margin-top:14px;">
+          <div class="cc-field">
+            <label for="{{ form.creatinine.id_for_label }}">Créatinine (mg/L)</label>
+            {{ form.creatinine }}
+            <span class="cc-field-hint">Normal : 6 – 12 mg/L</span>
+          </div>
+          <div class="cc-field">
+            <label for="{{ form.uree.id_for_label }}">Urée (g/L)</label>
+            {{ form.uree }}
+            <span class="cc-field-hint">Normal : 0.15 – 0.45 g/L</span>
+          </div>
+          <div class="cc-field">
+            <label for="{{ form.transaminases.id_for_label }}">Transaminases (UI/L)</label>
+            {{ form.transaminases }}
+            <span class="cc-field-hint">Normal : &lt; 40 UI/L</span>
+          </div>
+        </div>
+
       </div>
     </div>
 

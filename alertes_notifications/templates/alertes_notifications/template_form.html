@@ -67,9 +67,9 @@
         <label class="form-label" for="content">Contenu</label>
         <textarea id="content" name="content" class="form-control" oninput="updatePreview()" required></textarea>
         <p class="hint">
-          Variables : <code>{{patient_nom}}</code> <code>{{valeur}}</code>
+          Variables : {% verbatim %}<code>{{patient_nom}}</code> <code>{{valeur}}</code>
           <code>{{seuil}}</code> <code>{{unite}}</code> <code>{{date}}</code>
-          <code>{{type_mesure}}</code>
+          <code>{{type_mesure}}</code>{% endverbatim %}
         </p>
       </div>
       <div style="display:flex;gap:10px;margin-top:4px;">
@@ -97,6 +97,7 @@
 </div>
 
 <script>
+{% verbatim %}
 const EXEMPLE = {
   '{{patient_nom}}': 'Toure Fode',
   '{{valeur}}':      '18.2',
@@ -105,6 +106,7 @@ const EXEMPLE = {
   '{{date}}':        new Date().toLocaleString('fr-FR'),
   '{{type_mesure}}': 'glycémie',
 };
+{% endverbatim %}
 
 function updatePreview() {
   let text = document.getElementById('content').value || 'Votre message s\'affichera ici…';

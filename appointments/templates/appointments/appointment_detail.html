@@ -1,73 +1,123 @@
 {% extends 'core/base.html' %}
+{% block title %}Détail RDV — ChroniCare{% endblock %}
+
+{% block extra_css %}
+<style>
+  .cc-page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:12px; }
+  .cc-page-header h1 { font-size:20px; font-weight:700; color:#1C2833; margin:0; display:flex; align-items:center; gap:8px; }
+  .cc-page-header h1 i { color:#0F6E56; }
+
+  .cc-card { background:#fff; border:1px solid rgba(0,0,0,.07); border-radius:12px; overflow:hidden; margin-bottom:20px; }
+  .cc-card-header { padding:14px 20px; border-bottom:1px solid rgba(0,0,0,.06); display:flex; align-items:center; gap:8px; }
+  .cc-card-header h3 { font-size:14px; font-weight:600; color:#1C2833; margin:0; display:flex; align-items:center; gap:8px; }
+  .cc-card-header h3 i { color:#0F6E56; }
+  .cc-card-body { padding:20px 24px; }
+
+  .cc-info-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:16px; }
+  .cc-info-item label { font-size:11px; font-weight:700; color:#A0AEC0; text-transform:uppercase; letter-spacing:.04em; display:block; margin-bottom:4px; }
+  .cc-info-item .val { font-size:14px; color:#1C2833; font-weight:500; }
+  .cc-info-item .val.muted { color:#717D7E; }
+
+  .sb { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; }
+  .sb-planifie { background:#FAEEDA; color:#633806; }
+  .sb-effectue { background:#E1F5EE; color:#085041; }
+  .sb-annule   { background:#FCEBEB; color:#791F1F; }
+
+  .cc-notes { background:#F7FAFB; border-radius:8px; padding:14px 16px; font-size:13px; color:#4A5568; line-height:1.6; white-space:pre-wrap; }
+
+  .cc-actions-bar { display:flex; gap:8px; flex-wrap:wrap; }
+  .btn-back   { background:#F4F9FC; color:#4A5568; border:1px solid rgba(0,0,0,.08); border-radius:8px; padding:8px 16px; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+  .btn-back:hover { background:#E8F0F5; }
+  .btn-edit   { background:#FAEEDA; color:#633806; border:none; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+  .btn-edit:hover { background:#F0E0C0; }
+  .btn-delete { background:#FCEBEB; color:#791F1F; border:none; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+  .btn-delete:hover { background:#F0D5D5; }
+  .btn-suivi  { background:#E1F5EE; color:#085041; border:none; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+  .btn-suivi:hover { background:#C5E5D5; }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<div class="container mt-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <h2 class="fw-bold">
-            Détail Rendez-vous
-        </h2>
-
-        <a href="{% url 'appointments' %}" class="btn btn-secondary">
-            ← Retour
+<div class="cc-page-header">
+  <h1><i class="ti ti-calendar-event"></i> Détail du rendez-vous</h1>
+  <div class="cc-actions-bar">
+    <a href="{% url 'appointment-list' %}" class="btn-back">
+      <i class="ti ti-arrow-left"></i> Retour
+    </a>
+    {% if request.user.role == 'admin' or request.user.role == 'doctor' %}
+      <a href="{% url 'appointment-update' appointment.id %}" class="btn-edit">
+        <i class="ti ti-edit"></i> Modifier
+      </a>
+      <a href="{% url 'appointment-delete' appointment.id %}" class="btn-delete">
+        <i class="ti ti-trash"></i> Supprimer
+      </a>
+      {% if appointment.status == 'effectue' %}
+        <a href="{% url 'suivi-create-from-rdv' appointment.id %}" class="btn-suivi">
+          <i class="ti ti-stethoscope"></i> Créer un suivi
         </a>
-
-    </div>
-
-    <div class="card shadow-sm border-0">
-
-        <div class="card-body">
-
-            <p>
-                <strong>Patient :</strong>
-                {{ appointment.patient }}
-            </p>
-
-            <p>
-                <strong>Médecin :</strong>
-                Dr. {{ appointment.doctor }}
-            </p>
-
-            <p>
-                <strong>Date :</strong>
-                {{ appointment.date }}
-            </p>
-
-            <p>
-                <strong>Heure :</strong>
-                {{ appointment.heure }}
-            </p>
-
-            <p>
-                <strong>Motif :</strong>
-                {{ appointment.motif }}
-            </p>
-
-            <p>
-                <strong>Notes :</strong><br>
-                {{ appointment.notes }}
-            </p>
-
-            <p>
-                <strong>Statut :</strong>
-
-                {% if appointment.status == 'planifie' %}
-                    <span class="badge bg-primary">Planifié</span>
-
-                {% elif appointment.status == 'effectue' %}
-                    <span class="badge bg-success">Effectué</span>
-
-                {% else %}
-                    <span class="badge bg-danger">Annulé</span>
-                {% endif %}
-            </p>
-
-        </div>
-
-    </div>
-
+      {% endif %}
+    {% endif %}
+  </div>
 </div>
+
+<div class="cc-card">
+  <div class="cc-card-header">
+    <h3><i class="ti ti-info-circle"></i> Informations</h3>
+  </div>
+  <div class="cc-card-body">
+    <div class="cc-info-grid">
+      <div class="cc-info-item">
+        <label>Patient</label>
+        <div class="val">
+          <a href="{% url 'patient-detail' appointment.patient.id %}" style="color:#0F6E56;text-decoration:none;font-weight:600;">
+            {{ appointment.patient }}
+          </a>
+        </div>
+      </div>
+      <div class="cc-info-item">
+        <label>Médecin</label>
+        <div class="val">Dr. {{ appointment.doctor.get_full_name|default:appointment.doctor.username }}</div>
+      </div>
+      <div class="cc-info-item">
+        <label>Date</label>
+        <div class="val">{{ appointment.date|date:"l d F Y" }}</div>
+      </div>
+      <div class="cc-info-item">
+        <label>Heure</label>
+        <div class="val">{{ appointment.heure|time:"H:i" }}</div>
+      </div>
+      <div class="cc-info-item">
+        <label>Motif</label>
+        <div class="val {% if not appointment.motif %}muted{% endif %}">
+          {{ appointment.motif|default:"Non renseigné" }}
+        </div>
+      </div>
+      <div class="cc-info-item">
+        <label>Statut</label>
+        <div class="val">
+          {% if appointment.status == 'planifie' %}
+            <span class="sb sb-planifie"><i class="ti ti-clock"></i> Planifié</span>
+          {% elif appointment.status == 'effectue' %}
+            <span class="sb sb-effectue"><i class="ti ti-check"></i> Effectué</span>
+          {% else %}
+            <span class="sb sb-annule"><i class="ti ti-x"></i> Annulé</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if appointment.notes %}
+<div class="cc-card">
+  <div class="cc-card-header">
+    <h3><i class="ti ti-notes"></i> Notes</h3>
+  </div>
+  <div class="cc-card-body">
+    <div class="cc-notes">{{ appointment.notes }}</div>
+  </div>
+</div>
+{% endif %}
 
 {% endblock %}

@@ -128,7 +128,10 @@ def suivi_create(request):
                 for k in [
                     "poids", "taille",
                     "tension_systolique", "tension_diastolique",
-                    "glycemie", "cd4", "charge_virale",
+                    "glycemie",
+                    "cholesterol", "creatinine", "uree",
+                    "transaminases", "hemoglobine",
+                    "cd4", "charge_virale",
                     "observations", "statut",
                 ]
             }
@@ -143,6 +146,11 @@ def suivi_create(request):
                 tension_systolique=form.cleaned_data.get("tension_systolique"),
                 tension_diastolique=form.cleaned_data.get("tension_diastolique"),
                 glycemie=form.cleaned_data.get("glycemie"),
+                cholesterol=form.cleaned_data.get("cholesterol"),
+                creatinine=form.cleaned_data.get("creatinine"),
+                uree=form.cleaned_data.get("uree"),
+                transaminases=form.cleaned_data.get("transaminases"),
+                hemoglobine=form.cleaned_data.get("hemoglobine"),
                 cd4=form.cleaned_data.get("cd4"),
                 charge_virale=form.cleaned_data.get("charge_virale"),
                 observations=form.cleaned_data.get("observations"),

@@ -1,58 +1,89 @@
 {% extends 'core/base.html' %}
+{% block title %}Supprimer RDV — ChroniCare{% endblock %}
+
+{% block extra_css %}
+<style>
+  .cc-page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:12px; }
+  .cc-page-header h1 { font-size:20px; font-weight:700; color:#1C2833; margin:0; display:flex; align-items:center; gap:8px; }
+  .cc-page-header h1 i { color:#C0392B; }
+
+  .cc-confirm-card { background:#fff; border:1px solid rgba(0,0,0,.07); border-radius:12px; overflow:hidden; max-width:540px; }
+  .cc-confirm-header { padding:14px 20px; border-bottom:1px solid rgba(0,0,0,.06); background:#FEF0F0; }
+  .cc-confirm-header h3 { font-size:14px; font-weight:600; color:#791F1F; margin:0; display:flex; align-items:center; gap:8px; }
+  .cc-confirm-body { padding:24px; }
+
+  .cc-warn-msg { display:flex; align-items:flex-start; gap:12px; background:#FEF0F0; border:1px solid #F5C6CB; border-radius:8px; padding:14px 16px; margin-bottom:20px; }
+  .cc-warn-msg i { color:#C0392B; font-size:22px; flex-shrink:0; margin-top:1px; }
+  .cc-warn-msg p { margin:0; color:#791F1F; font-size:13px; line-height:1.5; }
+  .cc-warn-msg strong { display:block; margin-bottom:4px; font-size:14px; }
+
+  .cc-info-list { list-style:none; padding:0; margin:0 0 24px; display:flex; flex-direction:column; gap:8px; }
+  .cc-info-list li { display:flex; gap:10px; font-size:13px; }
+  .cc-info-list li span:first-child { font-weight:600; color:#717D7E; min-width:80px; }
+  .cc-info-list li span:last-child { color:#1C2833; }
+
+  .cc-form-footer { display:flex; gap:10px; flex-wrap:wrap; }
+  .btn-delete-confirm { background:#C0392B; color:#fff; border:none; border-radius:8px; padding:10px 22px; font-size:14px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:.14s; }
+  .btn-delete-confirm:hover { background:#A93226; }
+  .btn-cancel { background:#F4F9FC; color:#4A5568; border:1px solid rgba(0,0,0,.08); border-radius:8px; padding:10px 20px; font-size:14px; text-decoration:none; display:inline-flex; align-items:center; gap:7px; }
+  .btn-cancel:hover { background:#E8F0F5; }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<div class="container mt-4">
+<div class="cc-page-header">
+  <h1><i class="ti ti-trash"></i> Supprimer le rendez-vous</h1>
+</div>
 
-    <div class="card shadow-sm border-0">
+<div class="cc-confirm-card">
+  <div class="cc-confirm-header">
+    <h3><i class="ti ti-alert-triangle"></i> Confirmation de suppression</h3>
+  </div>
+  <div class="cc-confirm-body">
 
-        <div class="card-header bg-danger text-white">
-
-            <h4 class="mb-0">
-                Supprimer le rendez-vous
-            </h4>
-
-        </div>
-
-        <div class="card-body">
-
-            <p>
-                Voulez-vous vraiment supprimer ce rendez-vous ?
-            </p>
-
-            <p>
-                <strong>Patient :</strong>
-                {{ appointment.patient }}
-            </p>
-
-            <p>
-                <strong>Date :</strong>
-                {{ appointment.date }}
-            </p>
-
-            <p>
-                <strong>Heure :</strong>
-                {{ appointment.heure }}
-            </p>
-
-            <form method="POST">
-
-                {% csrf_token %}
-
-                <button type="submit" class="btn btn-danger">
-                    Supprimer
-                </button>
-
-                <a href="{% url 'appointments' %}" class="btn btn-secondary">
-                    Annuler
-                </a>
-
-            </form>
-
-        </div>
-
+    <div class="cc-warn-msg">
+      <i class="ti ti-alert-circle"></i>
+      <p>
+        <strong>Cette action est irréversible.</strong>
+        Le rendez-vous sera définitivement supprimé.
+      </p>
     </div>
 
+    <ul class="cc-info-list">
+      <li>
+        <span>Patient</span>
+        <span>{{ appointment.patient }}</span>
+      </li>
+      <li>
+        <span>Médecin</span>
+        <span>Dr. {{ appointment.doctor.get_full_name|default:appointment.doctor.username }}</span>
+      </li>
+      <li>
+        <span>Date</span>
+        <span>{{ appointment.date|date:"d/m/Y" }} à {{ appointment.heure|time:"H:i" }}</span>
+      </li>
+      {% if appointment.motif %}
+      <li>
+        <span>Motif</span>
+        <span>{{ appointment.motif }}</span>
+      </li>
+      {% endif %}
+    </ul>
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="cc-form-footer">
+        <button type="submit" class="btn-delete-confirm">
+          <i class="ti ti-trash"></i> Oui, supprimer
+        </button>
+        <a href="{% url 'appointment-list' %}" class="btn-cancel">
+          <i class="ti ti-arrow-left"></i> Annuler
+        </a>
+      </div>
+    </form>
+
+  </div>
 </div>
 
 {% endblock %}

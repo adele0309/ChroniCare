@@ -24,6 +24,13 @@ class UserProfileForm(forms.ModelForm):
             'photo':      forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        if self.instance and self.instance.role == 'doctor':
+            if not cleaned_data.get('specialite'):
+                self.add_error('specialite', "La spécialité est obligatoire pour un médecin.")
+        return cleaned_data
+
 
 class UserForm(forms.ModelForm):
     """Formulaire admin : édition complète d'un utilisateur (rôle modifiable)."""

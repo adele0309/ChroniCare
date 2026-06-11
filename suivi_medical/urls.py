@@ -19,5 +19,6 @@ urlpatterns = [
     path('<int:pk>/', views.suivi_detail, name='suivi-detail'),
     path('<int:pk>/edit/', views.suivi_update, name='suivi-update'),
     path('<int:pk>/delete/', views.suivi_delete, name='suivi-delete'),
-    path('creer/<int:pk>/',views.creer_prescription,name='creer-prescription'),  
+    path('creer/<int:pk>/', views.creer_prescription, name='creer-prescription'),
+    path('from-rdv/<int:rdv_id>/', views.create_suivi_from_rdv_view, name='suivi-create-from-rdv'),
 ]

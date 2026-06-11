@@ -240,6 +240,46 @@
           </div>
           {% endif %}
 
+          {% if suivi.hemoglobine is not None %}
+          <div class="cc-vital {% if suivi.hemoglobine < 7.0 %}crit{% elif suivi.hemoglobine < 12.0 %}warn{% else %}ok{% endif %}">
+            <div class="cc-vital-label">Hémoglobine</div>
+            <div class="cc-vital-val">{{ suivi.hemoglobine }}</div>
+            <div class="cc-vital-unit">g/dL</div>
+          </div>
+          {% endif %}
+
+          {% if suivi.cholesterol is not None %}
+          <div class="cc-vital {% if suivi.cholesterol > 3.0 %}crit{% elif suivi.cholesterol > 2.0 %}warn{% else %}ok{% endif %}">
+            <div class="cc-vital-label">Cholestérol</div>
+            <div class="cc-vital-val">{{ suivi.cholesterol }}</div>
+            <div class="cc-vital-unit">g/L</div>
+          </div>
+          {% endif %}
+
+          {% if suivi.creatinine is not None %}
+          <div class="cc-vital {% if suivi.creatinine > 20.0 %}crit{% elif suivi.creatinine > 12.0 %}warn{% else %}ok{% endif %}">
+            <div class="cc-vital-label">Créatinine</div>
+            <div class="cc-vital-val">{{ suivi.creatinine }}</div>
+            <div class="cc-vital-unit">mg/L</div>
+          </div>
+          {% endif %}
+
+          {% if suivi.uree is not None %}
+          <div class="cc-vital {% if suivi.uree > 0.6 %}crit{% elif suivi.uree > 0.45 %}warn{% else %}ok{% endif %}">
+            <div class="cc-vital-label">Urée</div>
+            <div class="cc-vital-val">{{ suivi.uree }}</div>
+            <div class="cc-vital-unit">g/L</div>
+          </div>
+          {% endif %}
+
+          {% if suivi.transaminases is not None %}
+          <div class="cc-vital {% if suivi.transaminases > 200 %}crit{% elif suivi.transaminases > 40 %}warn{% else %}ok{% endif %}">
+            <div class="cc-vital-label">Transaminases</div>
+            <div class="cc-vital-val">{{ suivi.transaminases|floatformat:0 }}</div>
+            <div class="cc-vital-unit">UI/L</div>
+          </div>
+          {% endif %}
+
           {% if not suivi.poids and not suivi.imc and not suivi.tension_systolique and not suivi.glycemie and not suivi.cd4 %}
           <p style="color:#A0AEC0;font-size:13px;text-align:center;padding:12px 0;grid-column:1/-1;">
             Aucune constante vitale enregistrée.

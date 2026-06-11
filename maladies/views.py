@@ -1,7 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from core.utils import log_action
 from .models import Maladie, PatientMaladie, SeuilAlerte
 from .serializers import MaladieSerializer, PatientMaladieSerializer, SeuilAlerteSerializer
@@ -22,19 +20,21 @@ class MaladieViewSet(viewsets.ModelViewSet):
 
 class SeuilAlerteViewSet(viewsets.ModelViewSet):
     queryset = SeuilAlerte.objects.all()
+    permission_classes = [IsDoctorOrNurseOrAdmin]
     serializer_class = SeuilAlerteSerializer
 
 
 class PatientMaladieViewSet(viewsets.ModelViewSet):
     queryset = PatientMaladie.objects.select_related('patient', 'maladie')
+    permission_classes = [IsDoctorOrNurseOrAdmin]
     serializer_class = PatientMaladieSerializer
 
     def perform_create(self, serializer):
-        patient = serializer.save()
+        pm = serializer.save()
         log_action(
             self.request.user,
             "CREATE_MALADIE",
-            f"MALADIE ajouté pour {patient.nom}",
+            f"MALADIE {pm.maladie.nom} ajoutée pour {pm.patient.nom} {pm.patient.prenom}",
             "MALADIE"
         )
 
@@ -46,9 +46,9 @@ class PatientMaladieViewSet(viewsets.ModelViewSet):
         maladie_type = self.request.query_params.get('type')
         if maladie_type:
             qs = qs.filter(maladie__type=maladie_type)
-        status = self.request.query_params.get('status')
-        if status:
-            qs = qs.filter(status=status)
+        status_filter = self.request.query_params.get('status')
+        if status_filter:
+            qs = qs.filter(status=status_filter)
         return qs
 
 

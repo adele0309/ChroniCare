@@ -1,3 +1,5 @@
+import uuid
+
 from django import forms
 from django.forms import inlineformset_factory
 
@@ -75,8 +77,14 @@ class MedicationLotForm(forms.ModelForm):
         fields = ['medication', 'numero_lot', 'quantite', 'date_expiration', 'date_reception']
         widgets = {
             'medication':     forms.Select(attrs={'class': 'form-select'}),
-            'numero_lot':     forms.TextInput(attrs={'class': 'form-control'}),
+            'numero_lot':     forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Laissez vide pour générer automatiquement'}),
             'quantite':       forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
             'date_expiration': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'date_reception':  forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
+
+    def clean_numero_lot(self):
+        numero = self.cleaned_data.get('numero_lot', '').strip()
+        if not numero:
+            numero = f"LOT-{uuid.uuid4().hex[:8].upper()}"
+        return numero

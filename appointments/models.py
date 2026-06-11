@@ -68,22 +68,18 @@ class Appointment(models.Model):
         if not self.date or not self.heure:
             return
 
-        # fusion date + heure
-        appointment_datetime = datetime.combine(
-            self.date,
-            self.heure
-        )
-
-        appointment_datetime = timezone.make_aware(
-            appointment_datetime
-        )
-
-        # rendez-vous passé
-        if appointment_datetime < timezone.now():
-
-            raise ValidationError(
-                "La date du rendez-vous ne peut pas être dans le passé."
+        # Date dans le passé : vérification uniquement à la création
+        # (self.pk is None = nouveau RDV). On autorise la mise à jour
+        # d'un RDV existant dont la date est passée (pour le marquer
+        # "effectué", ajouter des notes, etc.)
+        if not self.pk:
+            appointment_datetime = timezone.make_aware(
+                datetime.combine(self.date, self.heure)
             )
+            if appointment_datetime < timezone.now():
+                raise ValidationError(
+                    "La date du rendez-vous ne peut pas être dans le passé."
+                )
 
         # conflit médecin
         if Appointment.objects.filter(

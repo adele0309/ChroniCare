@@ -75,7 +75,7 @@
     {% if alert.source_suivi %}
     <div class="cc-dl-item">
       <label>Suivi médical lié</label>
-      <span>{{ alert.source_suivi.date_suivi|date:"d/m/Y" }} — {{ alert.source_suivi.type_suivi }}</span>
+      <span>{{ alert.source_suivi.created_at|date:"d/m/Y" }} — {{ alert.source_suivi.get_type_suivi_display }}</span>
     </div>
     {% endif %}
     {% if alert.source_labtest %}

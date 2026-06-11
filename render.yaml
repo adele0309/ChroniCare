@@ -1,0 +1,71 @@
+services:
+  # ── Application Django principale ──
+  - type: web
+    name: chronicare
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FERNET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chronicare-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: chronicare-redis
+          type: redis
+          property: connectionString
+      - key: RENDER_EXTERNAL_HOSTNAME
+        value: chronicare.onrender.com
+
+  # ── Worker Celery ──
+  - type: worker
+    name: chronicare-celery
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A config worker -l info"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chronicare-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: chronicare-redis
+          type: redis
+          property: connectionString
+
+  # ── Celery Beat (tâches planifiées) ──
+  - type: worker
+    name: chronicare-beat
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A config beat -l info"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: REDIS_URL
+        fromService:
+          name: chronicare-redis
+          type: redis
+          property: connectionString
+
+databases:
+  # ── PostgreSQL ──
+  - name: chronicare-db
+    databaseName: chronicare
+    user: chronicare_user
+    plan: free
+
+  # ── Redis ──
+  - name: chronicare-redis
+    plan: free
+    type: redis

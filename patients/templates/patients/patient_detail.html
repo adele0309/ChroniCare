@@ -118,6 +118,7 @@
       <a href="{% url 'dossier-medical' patient.id %}" class="cc-btn-full btn-dossier-full">
         <i class="ti ti-clipboard-text"></i> Dossier médical complet
       </a>
+      {% if request.user.role == 'admin' or request.user.role == 'doctor' or request.user.role == 'nurse' %}
       <a href="{% url 'patient-update' patient.id %}" class="cc-btn-full btn-edit-full">
         <i class="ti ti-edit"></i> Modifier
       </a>
@@ -127,6 +128,7 @@
       <a href="{% url 'patient-list' %}" class="cc-btn-full btn-back-full">
         <i class="ti ti-arrow-left"></i> Retour à la liste
       </a>
+      {% endif %}
     </div>
   </div>
 

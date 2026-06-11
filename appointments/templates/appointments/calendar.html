@@ -1,45 +1,55 @@
 {% extends 'core/base.html' %}
 
+{% block title %}Calendrier — ChroniCare{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+<style>
+  .cc-cal-wrap { background:#fff; border-radius:12px; border:1px solid rgba(0,0,0,.07); padding:20px; }
+  .cc-page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px; }
+  .cc-page-header h1 { font-size:20px; font-weight:700; color:#1C2833; margin:0; display:flex; align-items:center; gap:8px; }
+  .cc-page-header h1 i { color:#0F6E56; }
+  .btn-back { background:#F4F9FC; color:#4A5568; border:1px solid rgba(0,0,0,.08); border-radius:8px; padding:7px 14px; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+  .btn-back:hover { background:#E8F0F5; }
+</style>
+{% endblock %}
+
 {% block content %}
 
-<div class="container mt-4">
-
-    <h2 class="mb-4">Calendrier des Rendez-vous 🏥</h2>
-
-    <div id="calendar"></div>
-
+<div class="cc-page-header">
+  <h1><i class="ti ti-calendar-month"></i> Calendrier des rendez-vous</h1>
+  <a href="{% url 'appointment-list' %}" class="btn-back">
+    <i class="ti ti-arrow-left"></i> Liste
+  </a>
 </div>
 
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+<div class="cc-cal-wrap">
+  <div id="calendar"></div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-
 <script>
-
 document.addEventListener('DOMContentLoaded', function () {
+    var events = {{ events_json }};
 
-    var calendarEl = document.getElementById('calendar');
-
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-
+    var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         initialView: 'dayGridMonth',
-
-        events: '/api/appointments/',
-
-        eventColor: '#0d6efd',
-
+        locale: 'fr',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,listWeek'
+        },
+        events: events,
         eventClick: function(info) {
-            alert(
-                "Patient: " + info.event.title +
-                "\nDate: " + info.event.start
-            );
+            alert("Patient : " + info.event.title + "\nDate : " + info.event.startStr);
         }
-
     });
 
     calendar.render();
-
 });
-
 </script>
-
 {% endblock %}

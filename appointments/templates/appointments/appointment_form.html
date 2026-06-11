@@ -1,51 +1,124 @@
 {% extends 'core/base.html' %}
+{% block title %}{% if form.instance.pk %}Modifier RDV{% else %}Nouveau RDV{% endif %} — ChroniCare{% endblock %}
+
+{% block extra_css %}
+<style>
+  .cc-page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:12px; }
+  .cc-page-header h1 { font-size:20px; font-weight:700; color:#1C2833; margin:0; display:flex; align-items:center; gap:8px; }
+  .cc-page-header h1 i { color:#0F6E56; }
+
+  .cc-form-card { background:#fff; border:1px solid rgba(0,0,0,.07); border-radius:12px; overflow:hidden; }
+  .cc-form-header { padding:14px 20px; border-bottom:1px solid rgba(0,0,0,.06); }
+  .cc-form-header h3 { font-size:14px; font-weight:600; color:#1C2833; margin:0; display:flex; align-items:center; gap:8px; }
+  .cc-form-header h3 i { color:#0F6E56; }
+  .cc-form-body { padding:24px; }
+
+  .cc-form-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:16px; }
+  .cc-field { display:flex; flex-direction:column; gap:5px; }
+  .cc-field.full { grid-column:1/-1; }
+  .cc-field label { font-size:12px; font-weight:600; color:#4A5568; }
+  .cc-field input, .cc-field select, .cc-field textarea {
+    padding:9px 12px; border:1px solid #E2E8F0; border-radius:8px;
+    font-size:13px; outline:none; background:#FAFBFC; color:#1C2833;
+    transition:border-color .15s;
+  }
+  .cc-field input:focus, .cc-field select:focus, .cc-field textarea:focus { border-color:#0F6E56; background:#fff; }
+  .cc-field textarea { resize:vertical; min-height:90px; }
+  .cc-field .errorlist { list-style:none; padding:0; margin:4px 0 0; }
+  .cc-field .errorlist li { color:#C0392B; font-size:12px; }
+
+  .cc-form-errors { background:#FEF0F0; border:1px solid #F5C6CB; border-radius:8px; padding:12px 16px; margin-bottom:18px; color:#791F1F; font-size:13px; }
+  .cc-form-errors ul { margin:0; padding-left:18px; }
+
+  .cc-form-footer { display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
+  .btn-save { background:#0F6E56; color:#fff; border:none; border-radius:8px; padding:10px 24px; font-size:14px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:.14s; }
+  .btn-save:hover { background:#085041; }
+  .btn-cancel { background:#F4F9FC; color:#4A5568; border:1px solid rgba(0,0,0,.08); border-radius:8px; padding:10px 20px; font-size:14px; text-decoration:none; display:inline-flex; align-items:center; gap:7px; }
+  .btn-cancel:hover { background:#E8F0F5; }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<div class="container mt-4">
+<div class="cc-page-header">
+  <h1>
+    <i class="ti ti-calendar-plus"></i>
+    {% if form.instance.pk %}Modifier le rendez-vous{% else %}Nouveau rendez-vous{% endif %}
+  </h1>
+</div>
 
-    <div class="card shadow-sm border-0">
+<div class="cc-form-card">
+  <div class="cc-form-header">
+    <h3><i class="ti ti-forms"></i> Informations du rendez-vous</h3>
+  </div>
+  <div class="cc-form-body">
 
-        <div class="card-header bg-primary text-white">
-
-            <h4 class="mb-0">
-                Rendez-vous
-            </h4>
-
-        </div>
-
-        <div class="card-body">
-
-            <form method="POST">
-
-                {% csrf_token %}
-
-                {% if form.errors %}
-
-                <div class="alert alert-danger">
-
-                    {{ form.errors }}
-
-                </div>
-
-                {% endif %}
-
-                {{ form.as_p }}
-
-                <button type="submit" class="btn btn-success">
-                    Enregistrer
-                </button>
-
-                <a href="{% url 'appointment-list' %}" class="btn btn-secondary">
-                    Annuler
-                </a>
-
-            </form>
-
-        </div>
-
+    {% if form.non_field_errors %}
+    <div class="cc-form-errors">
+      <ul>{% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>
     </div>
+    {% endif %}
 
+    <form method="POST">
+      {% csrf_token %}
+      <div class="cc-form-grid">
+
+        <div class="cc-field">
+          <label for="{{ form.patient.id_for_label }}">Patient</label>
+          {{ form.patient }}
+          {% if form.patient.errors %}<ul class="errorlist">{% for e in form.patient.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
+        <div class="cc-field">
+          <label for="{{ form.doctor.id_for_label }}">Médecin</label>
+          {{ form.doctor }}
+          {% if form.doctor.errors %}<ul class="errorlist">{% for e in form.doctor.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
+        <div class="cc-field">
+          <label for="{{ form.date.id_for_label }}">Date</label>
+          {{ form.date }}
+          {% if form.date.errors %}<ul class="errorlist">{% for e in form.date.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
+        <div class="cc-field">
+          <label for="{{ form.heure.id_for_label }}">Heure</label>
+          {{ form.heure }}
+          {% if form.heure.errors %}<ul class="errorlist">{% for e in form.heure.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
+        <div class="cc-field">
+          <label for="{{ form.status.id_for_label }}">Statut</label>
+          {{ form.status }}
+          {% if form.status.errors %}<ul class="errorlist">{% for e in form.status.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
+        <div class="cc-field">
+          <label for="{{ form.motif.id_for_label }}">Motif</label>
+          {{ form.motif }}
+          {% if form.motif.errors %}<ul class="errorlist">{% for e in form.motif.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
+        <div class="cc-field full">
+          <label for="{{ form.notes.id_for_label }}">Notes</label>
+          {{ form.notes }}
+          {% if form.notes.errors %}<ul class="errorlist">{% for e in form.notes.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
+      </div>
+
+      <div class="cc-form-footer">
+        <button type="submit" class="btn-save">
+          <i class="ti ti-device-floppy"></i>
+          {% if form.instance.pk %}Enregistrer les modifications{% else %}Créer le rendez-vous{% endif %}
+        </button>
+        <a href="{% url 'appointment-list' %}" class="btn-cancel">
+          <i class="ti ti-x"></i> Annuler
+        </a>
+      </div>
+    </form>
+
+  </div>
 </div>
 
 {% endblock %}

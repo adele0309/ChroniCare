@@ -106,9 +106,11 @@
     <a href="{% url 'patient-detail' patient.id %}" class="btn-header btn-header-white">
       <i class="ti ti-arrow-left"></i> Fiche patient
     </a>
-    <a href="{% url 'suivi-create' %}" class="btn-header btn-header-white">
+    {% if request.user.role == 'admin' or request.user.role == 'doctor' or request.user.role == 'nurse' %}
+    <a href="{% url 'suivi-create' %}?patient={{ patient.id }}" class="btn-header btn-header-white">
       <i class="ti ti-plus"></i> Nouveau suivi
     </a>
+    {% endif %}
   </div>
 </div>
 
@@ -119,7 +121,9 @@
     <div class="cc-section">
       <div class="cc-section-header">
         <h3 class="cc-section-title"><i class="ti ti-stethoscope"></i> Historique des suivis médicaux</h3>
-        <a href="{% url 'suivi-create' %}" class="cc-section-link"><i class="ti ti-plus"></i> Nouveau suivi</a>
+        {% if request.user.role == 'admin' or request.user.role == 'doctor' or request.user.role == 'nurse' %}
+        <a href="{% url 'suivi-create' %}?patient={{ patient.id }}" class="cc-section-link"><i class="ti ti-plus"></i> Nouveau suivi</a>
+        {% endif %}
       </div>
       <div class="cc-section-body">
 
@@ -214,16 +218,20 @@
             <a href="{% url 'suivi-detail' suivi.id %}" style="font-size:12px;color:#0F6E56;text-decoration:none;font-weight:500;">
               <i class="ti ti-eye"></i> Détails complets
             </a>
+            {% if request.user.role == 'admin' or request.user.role == 'doctor' %}
             <a href="{% url 'creer-prescription' suivi.id %}" style="font-size:12px;color:#4A2E7B;text-decoration:none;font-weight:500;">
               <i class="ti ti-prescription"></i> Créer une prescription
             </a>
+            {% endif %}
           </div>
         </div>
         {% empty %}
           <div class="cc-empty">
             <i class="ti ti-stethoscope"></i>
             Aucun suivi médical enregistré pour ce patient.
-            <br><a href="{% url 'suivi-create' %}" style="color:#0F6E56;font-weight:600;">Créer le premier suivi →</a>
+            {% if request.user.role == 'admin' or request.user.role == 'doctor' or request.user.role == 'nurse' %}
+            <br><a href="{% url 'suivi-create' %}?patient={{ patient.id }}" style="color:#0F6E56;font-weight:600;">Créer le premier suivi →</a>
+            {% endif %}
           </div>
         {% endfor %}
       </div>

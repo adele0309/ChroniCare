@@ -237,6 +237,9 @@ def labtest_result(request, pk):
 def labtest_validate(request, pk):
     """Technicien valide définitivement le résultat."""
     test = get_object_or_404(LabTest, pk=pk)
+    if test.is_validated:
+        messages.warning(request, "Cette analyse est déjà validée.")
+        return redirect('labtest-detail', pk=pk)
     if request.method == 'POST':
         test.is_validated = True
         test.validated_by = request.user
@@ -265,6 +268,9 @@ def labtest_mark_interpreted(request, pk):
         LabTest.objects.select_related('patient', 'suivi', 'prescripteur'),
         pk=pk,
     )
+    if not test.is_validated:
+        messages.error(request, "Impossible d'interpréter une analyse non encore validée par le laboratoire.")
+        return redirect('labtest-detail', pk=pk)
     form = LabTestInterpretForm(request.POST or None, instance=test)
     if form.is_valid():
         labtest                = form.save(commit=False)

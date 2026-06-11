@@ -96,15 +96,24 @@
     </div>
 
     <div class="cc-card-actions">
-      <a href="{% url 'user-edit' user_obj.id %}" class="cc-btn-full btn-edit-full">
-        <i class="ti ti-edit"></i> Modifier
-      </a>
-      <a href="{% url 'user-delete' user_obj.id %}" class="cc-btn-full btn-delete-full">
-        <i class="ti ti-trash"></i> Supprimer
-      </a>
-      <a href="{% url 'user-list' %}" class="cc-btn-full btn-back-full">
-        <i class="ti ti-arrow-left"></i> Retour à la liste
-      </a>
+      {% if request.user.role == 'admin' %}
+        <a href="{% url 'user-edit' user_obj.id %}" class="cc-btn-full btn-edit-full">
+          <i class="ti ti-edit"></i> Modifier
+        </a>
+        <a href="{% url 'user-delete' user_obj.id %}" class="cc-btn-full btn-delete-full">
+          <i class="ti ti-trash"></i> Supprimer
+        </a>
+        <a href="{% url 'user-list' %}" class="cc-btn-full btn-back-full">
+          <i class="ti ti-arrow-left"></i> Retour à la liste
+        </a>
+      {% else %}
+        <a href="{% url 'profile-edit' %}" class="cc-btn-full btn-edit-full">
+          <i class="ti ti-edit"></i> Modifier mon profil
+        </a>
+        <a href="{% url 'dashboard' %}" class="cc-btn-full btn-back-full">
+          <i class="ti ti-arrow-left"></i> Retour au tableau de bord
+        </a>
+      {% endif %}
     </div>
   </div>
 

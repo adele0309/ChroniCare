@@ -82,6 +82,15 @@ def check_alerts_suivi(suivi):
             _alerte("Créatinine élevée", "warning", "creatinine",
                     "Alerte rénale", "Votre créatinine est élevée.", "warning")
 
+    # ── Urée ─────────────────────────────────────────────────────────────────
+    if suivi.uree is not None:
+        if suivi.uree > 0.60:
+            _alerte("Urée critique (insuffisance rénale)", "critical", "uree",
+                    "Alerte critique urée", "Votre taux d'urée est à un niveau critique.", "urgent")
+        elif suivi.uree > 0.45:
+            _alerte("Urée élevée", "warning", "uree",
+                    "Alerte urée", "Votre taux d'urée est élevé.", "warning")
+
     # ── Transaminases ────────────────────────────────────────────────────────
     if suivi.transaminases is not None:
         if suivi.transaminases > 200:

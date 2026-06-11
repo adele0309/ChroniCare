@@ -5,429 +5,563 @@
 {% block extra_css %}
 <style>
 
-  /* ── Variables patient ── */
+  /* ── Variables ── */
   :root {
-    --p-amber:     #B47129;
-    --p-amber-dk:  #7C4A0F;
-    --p-amber-lt:  #FEF3E7;
-    --p-teal:      #0F6E56;
-    --p-teal-lt:   #E0F5EE;
-    --p-red-lt:    #FDECEA;
-    --p-red:       #C0392B;
-    --p-blue-lt:   #EAF2FF;
-    --p-blue:      #1A60C8;
-    --p-card-bg:   #FFFFFF;
-    --p-bg:        #F5F7FA;
-    --p-border:    rgba(0,0,0,.07);
-    --p-text:      #1A2535;
-    --p-muted:     #6B7D8F;
+    --pk-teal:       #0A7C5C;
+    --pk-teal-mid:   #12A87D;
+    --pk-teal-lt:    #E8F7F2;
+    --pk-teal-dk:    #074F3A;
+    --pk-amber:      #B47129;
+    --pk-amber-lt:   #FEF3E7;
+    --pk-red:        #C0392B;
+    --pk-red-lt:     #FDECEA;
+    --pk-blue:       #1A60C8;
+    --pk-blue-lt:    #EAF2FF;
+    --pk-navy:       #0D1F3C;
+    --pk-text:       #1A2535;
+    --pk-muted:      #6B7D8F;
+    --pk-border:     #E2EAF2;
+    --pk-bg:         #F4F8FB;
+    --pk-card:       #FFFFFF;
+    --pk-radius:     16px;
+    --pk-shadow:     0 2px 14px rgba(13,31,60,.07);
+    --pk-shadow-md:  0 6px 24px rgba(13,31,60,.11);
   }
 
-  .p-page { display: flex; flex-direction: column; gap: 22px; }
+  .pk-page { display: flex; flex-direction: column; gap: 20px; }
 
-  /* ── Bannière de bienvenue ── */
-  .p-banner {
-    border-radius: 18px; overflow: hidden;
-    background: linear-gradient(135deg, #7C4A0F 0%, #B47129 45%, #D4892E 100%);
+  /* ══════════════════════════════════
+     HERO BANNER
+  ══════════════════════════════════ */
+  .pk-hero {
+    border-radius: 22px; overflow: hidden;
+    background: linear-gradient(135deg, #074F3A 0%, #0A7C5C 40%, #12A87D 80%, #1BC090 100%);
+    padding: 0;
+    position: relative;
+    box-shadow: 0 12px 40px rgba(10,124,92,.25);
+  }
+  .pk-hero-inner {
     padding: 28px 30px;
     display: flex; align-items: center; justify-content: space-between;
     gap: 20px; flex-wrap: wrap;
-    position: relative;
+    position: relative; z-index: 2;
   }
-  .p-banner::before {
+
+  /* Décoration géométrique */
+  .pk-hero::before {
     content: '';
     position: absolute; right: -60px; top: -60px;
-    width: 220px; height: 220px; border-radius: 50%;
-    background: rgba(255,255,255,.07);
+    width: 280px; height: 280px; border-radius: 50%;
+    background: rgba(255,255,255,.06); z-index: 1;
   }
-  .p-banner::after {
+  .pk-hero::after {
     content: '';
-    position: absolute; right: 60px; bottom: -40px;
-    width: 140px; height: 140px; border-radius: 50%;
-    background: rgba(255,255,255,.05);
+    position: absolute; right: 80px; bottom: -50px;
+    width: 180px; height: 180px; border-radius: 50%;
+    background: rgba(255,255,255,.04); z-index: 1;
   }
-  .p-banner-left { display: flex; align-items: center; gap: 18px; position: relative; z-index: 1; }
-  .p-banner-avatar {
-    width: 62px; height: 62px; border-radius: 18px;
-    background: rgba(255,255,255,.2);
+
+  /* ECG décoratif */
+  .pk-hero-ecg {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 40px; opacity: .08; pointer-events: none; overflow: hidden; z-index: 1;
+  }
+  .pk-hero-ecg svg { width: 200%; height: 100%; animation: ecg-slide 8s linear infinite; }
+  @keyframes ecg-slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .pk-hero-left { display: flex; align-items: center; gap: 18px; }
+  .pk-hero-avatar {
+    width: 64px; height: 64px; border-radius: 20px;
+    background: rgba(255,255,255,.18);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    box-shadow: 0 4px 20px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.15);
   }
-  .p-banner-avatar i { font-size: 32px; color: rgba(255,255,255,.9); }
-  .p-banner-text h1 { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 4px; }
-  .p-banner-text p  { font-size: 13px; color: rgba(255,255,255,.8); line-height: 1.5; margin: 0; max-width: 400px; }
-  .p-banner-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 14px; border-radius: 20px;
-    background: rgba(255,255,255,.18); color: #fff;
-    font-size: 11px; font-weight: 700; letter-spacing: .5px;
-    flex-shrink: 0; position: relative; z-index: 1;
+  .pk-hero-avatar i { font-size: 34px; color: rgba(255,255,255,.95); }
+  .pk-hero-name {
+    font-size: 22px; font-weight: 800; color: #fff;
+    margin-bottom: 4px; letter-spacing: -.3px;
   }
-  .p-banner-badge i { font-size: 14px; }
+  .pk-hero-sub { font-size: 13px; color: rgba(255,255,255,.75); line-height: 1.5; }
 
-  /* ── Alerte profil non lié ── */
-  .p-no-profil {
-    background: #FEF8EE;
-    border: 1px solid #F5DDA8;
-    border-left: 4px solid var(--p-amber);
-    border-radius: 12px; padding: 14px 18px;
+  .pk-hero-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+  .pk-hero-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 30px;
+    background: rgba(255,255,255,.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.2);
+    font-size: 12px; font-weight: 700; color: #fff;
+    letter-spacing: .3px;
+  }
+  .pk-hero-badge i { font-size: 15px; }
+  .pk-hero-badge.badge-ok { background: rgba(255,255,255,.18); }
+  .pk-hero-badge.badge-alert { background: rgba(192,57,43,.35); border-color: rgba(255,100,100,.3); }
+
+  /* ══════════════════════════════════
+     ALERTE DOSSIER NON LIE
+  ══════════════════════════════════ */
+  .pk-warning {
+    background: #FFF8EC;
+    border: 1px solid #F5D98A;
+    border-left: 4px solid var(--pk-amber);
+    border-radius: 14px; padding: 16px 20px;
     display: flex; align-items: flex-start; gap: 12px;
-    font-size: 13px; color: #6B3A06;
   }
-  .p-no-profil i { font-size: 20px; color: var(--p-amber); flex-shrink: 0; margin-top: 1px; }
-  .p-no-profil strong { display: block; font-weight: 700; margin-bottom: 2px; }
+  .pk-warning i { font-size: 22px; color: var(--pk-amber); flex-shrink: 0; margin-top: 2px; }
+  .pk-warning strong { display: block; font-size: 14px; font-weight: 700; color: #5A3208; margin-bottom: 2px; }
+  .pk-warning span { font-size: 12px; color: #7A4E1A; line-height: 1.5; }
 
-  /* ── KPI Cards ── */
-  .p-kpi-row {
+  /* ══════════════════════════════════
+     KPI CARDS
+  ══════════════════════════════════ */
+  .pk-kpi-grid {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
   }
-  .p-kpi {
-    background: var(--p-card-bg);
-    border: 1px solid var(--p-border);
-    border-radius: 14px; padding: 18px 20px;
+  .pk-kpi {
+    background: var(--pk-card);
+    border: 1px solid var(--pk-border);
+    border-radius: var(--pk-radius); padding: 20px 22px;
     display: flex; align-items: center; gap: 16px;
-    transition: transform .15s, box-shadow .15s;
-  }
-  .p-kpi:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.06); }
-  .p-kpi-ico {
-    width: 48px; height: 48px; border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .p-kpi-ico i { font-size: 24px; }
-  .p-kpi-num { font-size: 26px; font-weight: 800; color: var(--p-text); line-height: 1; margin-bottom: 3px; }
-  .p-kpi-label { font-size: 12px; color: var(--p-muted); font-weight: 500; }
-
-  .p-kpi.kpi-rdv .p-kpi-ico   { background: var(--p-teal-lt); }
-  .p-kpi.kpi-rdv .p-kpi-ico i { color: var(--p-teal); }
-  .p-kpi.kpi-rdv .p-kpi-num   { color: var(--p-teal); }
-
-  .p-kpi.kpi-alert .p-kpi-ico   { background: var(--p-red-lt); }
-  .p-kpi.kpi-alert .p-kpi-ico i { color: var(--p-red); }
-  .p-kpi.kpi-alert .p-kpi-num   { color: var(--p-red); }
-
-  .p-kpi.kpi-med .p-kpi-ico   { background: var(--p-blue-lt); }
-  .p-kpi.kpi-med .p-kpi-ico i { color: var(--p-blue); }
-  .p-kpi.kpi-med .p-kpi-num   { color: var(--p-blue); }
-
-  /* ── CTA Dossier médical ── */
-  .p-dossier {
-    background: linear-gradient(135deg, #0A4C38 0%, #0F6E56 60%, #1D9E75 100%);
-    border-radius: 16px; padding: 22px 26px;
-    display: flex; align-items: center; gap: 18px;
-    text-decoration: none; color: #fff;
+    box-shadow: var(--pk-shadow);
     transition: transform .15s, box-shadow .15s;
     position: relative; overflow: hidden;
   }
-  .p-dossier::after {
+  .pk-kpi::after {
     content: '';
-    position: absolute; right: -30px; top: -30px;
-    width: 150px; height: 150px; border-radius: 50%;
-    background: rgba(255,255,255,.07);
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    border-radius: 3px 3px 0 0;
   }
-  .p-dossier:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(10,76,56,.3); color: #fff; }
-  .p-dossier-ico {
-    width: 54px; height: 54px; border-radius: 15px;
-    background: rgba(255,255,255,.18);
+  .pk-kpi:hover { transform: translateY(-3px); box-shadow: var(--pk-shadow-md); }
+  .pk-kpi-ico {
+    width: 52px; height: 52px; border-radius: 16px;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .p-dossier-ico i { font-size: 28px; color: rgba(255,255,255,.9); }
-  .p-dossier-text h3 { font-size: 16px; font-weight: 800; margin: 0 0 4px; }
-  .p-dossier-text p  { font-size: 12px; color: rgba(255,255,255,.75); margin: 0; line-height: 1.5; }
-  .p-dossier-arrow { margin-left: auto; font-size: 24px; opacity: .7; flex-shrink: 0; position: relative; z-index: 1; }
+  .pk-kpi-ico i { font-size: 26px; }
+  .pk-kpi-num { font-size: 30px; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+  .pk-kpi-label { font-size: 12px; color: var(--pk-muted); font-weight: 500; }
 
-  /* ── Actions rapides ── */
-  .p-actions {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;
+  .pk-kpi.kk-rdv::after { background: var(--pk-teal); }
+  .pk-kpi.kk-rdv .pk-kpi-ico { background: var(--pk-teal-lt); }
+  .pk-kpi.kk-rdv .pk-kpi-ico i { color: var(--pk-teal); }
+  .pk-kpi.kk-rdv .pk-kpi-num { color: var(--pk-teal); }
+
+  .pk-kpi.kk-alert::after { background: var(--pk-red); }
+  .pk-kpi.kk-alert .pk-kpi-ico { background: var(--pk-red-lt); }
+  .pk-kpi.kk-alert .pk-kpi-ico i { color: var(--pk-red); }
+  .pk-kpi.kk-alert .pk-kpi-num { color: var(--pk-red); }
+
+  .pk-kpi.kk-dossier::after { background: var(--pk-blue); }
+  .pk-kpi.kk-dossier .pk-kpi-ico { background: var(--pk-blue-lt); }
+  .pk-kpi.kk-dossier .pk-kpi-ico i { color: var(--pk-blue); }
+  .pk-kpi.kk-dossier .pk-kpi-num { color: var(--pk-blue); }
+
+  /* ══════════════════════════════════
+     CTA DOSSIER MÉDICAL
+  ══════════════════════════════════ */
+  .pk-dossier-cta {
+    background: linear-gradient(135deg, var(--pk-teal-dk) 0%, var(--pk-teal) 50%, var(--pk-teal-mid) 100%);
+    border-radius: 18px; padding: 22px 26px;
+    display: flex; align-items: center; gap: 18px;
+    text-decoration: none; color: #fff;
+    box-shadow: 0 8px 28px rgba(10,124,92,.25);
+    transition: transform .15s, box-shadow .15s;
+    position: relative; overflow: hidden;
   }
-  .p-action {
-    background: var(--p-card-bg);
-    border: 1.5px solid var(--p-border);
-    border-radius: 14px; padding: 18px 12px;
-    text-align: center; text-decoration: none; color: var(--p-text);
+  .pk-dossier-cta::after {
+    content: '';
+    position: absolute; right: -20px; top: -20px;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.06);
+  }
+  .pk-dossier-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 38px rgba(10,124,92,.35);
+    color: #fff;
+  }
+  .pk-dossier-ico {
+    width: 56px; height: 56px; border-radius: 17px;
+    background: rgba(255,255,255,.18);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
+  }
+  .pk-dossier-ico i { font-size: 30px; color: rgba(255,255,255,.95); }
+  .pk-dossier-body { flex: 1; position: relative; z-index: 1; }
+  .pk-dossier-body h3 { font-size: 17px; font-weight: 800; margin: 0 0 4px; }
+  .pk-dossier-body p  { font-size: 12px; color: rgba(255,255,255,.75); margin: 0; line-height: 1.5; }
+  .pk-dossier-arrow { font-size: 26px; opacity: .6; flex-shrink: 0; position: relative; z-index: 1; }
+
+  /* ══════════════════════════════════
+     ACTIONS RAPIDES
+  ══════════════════════════════════ */
+  .pk-actions {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;
+  }
+  .pk-action {
+    background: var(--pk-card);
+    border: 1.5px solid var(--pk-border);
+    border-radius: 16px; padding: 18px 14px;
+    text-align: center; text-decoration: none;
     display: flex; flex-direction: column; align-items: center; gap: 10px;
-    transition: border-color .2s, transform .15s, background .2s;
+    color: var(--pk-text);
+    box-shadow: var(--pk-shadow);
+    transition: border-color .2s, transform .15s, background .2s, box-shadow .15s;
   }
-  .p-action:hover {
-    border-color: var(--p-teal);
-    transform: translateY(-2px);
-    background: var(--p-teal-lt);
-    color: var(--p-teal);
+  .pk-action:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--pk-shadow-md);
+    border-color: var(--pk-teal);
+    background: var(--pk-teal-lt);
+    color: var(--pk-teal);
   }
-  .p-action-ico {
-    width: 44px; height: 44px; border-radius: 13px;
+  .pk-action-ico {
+    width: 46px; height: 46px; border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
   }
-  .p-action-ico i { font-size: 22px; }
-  .p-action span { font-size: 12px; font-weight: 600; }
+  .pk-action-ico i { font-size: 22px; }
+  .pk-action-label { font-size: 12px; font-weight: 600; }
 
-  .p-action.pa-primary {
-    border-color: var(--p-teal);
-    background: var(--p-teal-lt);
-    color: var(--p-teal);
+  .pk-action.pk-action-primary {
+    border-color: var(--pk-teal);
+    background: var(--pk-teal-lt);
+    color: var(--pk-teal);
   }
-  .p-action.pa-primary:hover { background: #C5E8DA; }
+  .pk-action.pk-action-primary:hover { background: #C5EAD9; }
 
-  /* ── Section titre ── */
-  .p-section-header {
+  /* ══════════════════════════════════
+     SECTION HEADER
+  ══════════════════════════════════ */
+  .pk-section-hd {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 14px;
   }
-  .p-section-header h2 {
-    font-size: 15px; font-weight: 700; color: var(--p-text);
+  .pk-section-hd h2 {
+    font-size: 15px; font-weight: 700; color: var(--pk-navy);
     display: flex; align-items: center; gap: 8px;
   }
-  .p-section-header h2 i { font-size: 18px; }
-  .p-section-header a {
-    font-size: 12px; font-weight: 600; color: var(--p-teal);
+  .pk-section-hd h2 i { font-size: 19px; }
+  .pk-section-hd a {
+    font-size: 12px; font-weight: 600; color: var(--pk-teal);
     text-decoration: none; display: flex; align-items: center; gap: 4px;
+    transition: color .15s;
   }
-  .p-section-header a:hover { text-decoration: underline; }
+  .pk-section-hd a:hover { color: var(--pk-teal-mid); text-decoration: underline; }
 
-  /* ── Liste rendez-vous ── */
-  .p-rdv-list { display: flex; flex-direction: column; gap: 10px; }
-  .p-rdv-card {
-    background: var(--p-card-bg);
-    border: 1px solid var(--p-border);
-    border-radius: 13px; padding: 14px 18px;
-    display: flex; align-items: center; gap: 16px;
-    transition: box-shadow .15s, border-color .15s;
+  /* ══════════════════════════════════
+     RENDEZ-VOUS
+  ══════════════════════════════════ */
+  .pk-rdv-list { display: flex; flex-direction: column; gap: 10px; }
+  .pk-rdv-card {
+    background: var(--pk-card);
+    border: 1px solid var(--pk-border);
+    border-radius: 14px; padding: 14px 18px;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: var(--pk-shadow);
+    transition: box-shadow .15s, border-color .15s, transform .15s;
+    text-decoration: none; color: var(--pk-text);
   }
-  .p-rdv-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); border-color: rgba(15,110,86,.2); }
-  .p-rdv-date {
-    min-width: 52px; text-align: center;
-    background: var(--p-teal-lt); border-radius: 11px; padding: 8px 6px;
+  .pk-rdv-card:hover {
+    box-shadow: var(--pk-shadow-md);
+    border-color: rgba(10,124,92,.25);
+    transform: translateX(4px);
+    color: var(--pk-text);
   }
-  .p-rdv-date .day  { font-size: 22px; font-weight: 800; color: var(--p-teal); line-height: 1; }
-  .p-rdv-date .mon  { font-size: 10px; font-weight: 700; color: var(--p-teal); text-transform: uppercase; letter-spacing: .5px; }
-  .p-rdv-info { flex: 1; min-width: 0; }
-  .p-rdv-info strong { display: block; font-size: 13px; font-weight: 700; color: var(--p-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .p-rdv-info span   { font-size: 11px; color: var(--p-muted); margin-top: 2px; display: block; }
-  .p-rdv-time {
+  .pk-rdv-date-blk {
+    min-width: 54px; text-align: center;
+    background: var(--pk-teal-lt); border-radius: 13px; padding: 8px 6px;
+    flex-shrink: 0;
+  }
+  .pk-rdv-date-blk .d { font-size: 24px; font-weight: 900; color: var(--pk-teal); line-height: 1; }
+  .pk-rdv-date-blk .m { font-size: 10px; font-weight: 700; color: var(--pk-teal); text-transform: uppercase; letter-spacing: .5px; }
+  .pk-rdv-body { flex: 1; min-width: 0; }
+  .pk-rdv-body strong { display: block; font-size: 13px; font-weight: 700; color: var(--pk-navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pk-rdv-body span { font-size: 11px; color: var(--pk-muted); margin-top: 2px; display: block; }
+  .pk-rdv-time {
     display: flex; align-items: center; gap: 5px;
-    font-size: 12px; font-weight: 600; color: var(--p-muted);
+    font-size: 12px; font-weight: 700; color: var(--pk-amber);
     white-space: nowrap; flex-shrink: 0;
+    background: var(--pk-amber-lt); padding: 4px 10px; border-radius: 20px;
   }
-  .p-rdv-time i { font-size: 14px; color: var(--p-amber); }
+  .pk-rdv-time i { font-size: 13px; }
 
-  /* ── Liste alertes ── */
-  .p-alert-list { display: flex; flex-direction: column; gap: 10px; }
-  .p-alert-card {
-    background: var(--p-card-bg);
-    border: 1px solid var(--p-border);
-    border-left: 4px solid var(--p-red);
-    border-radius: 13px; padding: 13px 16px;
+  /* ══════════════════════════════════
+     ALERTES
+  ══════════════════════════════════ */
+  .pk-alert-list { display: flex; flex-direction: column; gap: 10px; }
+  .pk-alert-card {
+    background: var(--pk-card);
+    border: 1px solid var(--pk-border);
+    border-left: 4px solid var(--pk-red);
+    border-radius: 14px; padding: 14px 16px;
     display: flex; align-items: flex-start; gap: 12px;
+    box-shadow: var(--pk-shadow);
     transition: box-shadow .15s;
   }
-  .p-alert-card:hover { box-shadow: 0 4px 14px rgba(192,57,43,.08); }
-  .p-alert-ico {
-    width: 36px; height: 36px; border-radius: 10px;
-    background: var(--p-red-lt);
+  .pk-alert-card:hover { box-shadow: var(--pk-shadow-md); }
+  .pk-alert-ico {
+    width: 38px; height: 38px; border-radius: 11px;
+    background: var(--pk-red-lt);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .p-alert-ico i { font-size: 18px; color: var(--p-red); }
-  .p-alert-body { flex: 1; min-width: 0; }
-  .p-alert-body strong { display: block; font-size: 13px; font-weight: 700; color: var(--p-text); margin-bottom: 2px; }
-  .p-alert-body span   { font-size: 11px; color: var(--p-muted); }
-  .p-alert-chip {
-    font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 10px;
-    background: var(--p-red-lt); color: var(--p-red);
+  .pk-alert-ico i { font-size: 19px; color: var(--pk-red); }
+  .pk-alert-body { flex: 1; min-width: 0; }
+  .pk-alert-body strong { display: block; font-size: 13px; font-weight: 700; color: var(--pk-navy); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pk-alert-body span { font-size: 11px; color: var(--pk-muted); }
+  .pk-alert-chip {
+    font-size: 10px; font-weight: 700;
+    padding: 3px 9px; border-radius: 10px;
+    background: var(--pk-red-lt); color: var(--pk-red);
     white-space: nowrap; flex-shrink: 0; align-self: flex-start; margin-top: 2px;
   }
 
-  /* ── Empty states ── */
-  .p-empty {
-    text-align: center; padding: 32px 16px;
-    background: var(--p-card-bg); border: 1px solid var(--p-border);
-    border-radius: 13px;
+  /* ══════════════════════════════════
+     EMPTY STATE
+  ══════════════════════════════════ */
+  .pk-empty {
+    background: var(--pk-card);
+    border: 1px dashed var(--pk-border);
+    border-radius: 14px; padding: 36px 20px;
+    text-align: center;
+    box-shadow: var(--pk-shadow);
   }
-  .p-empty i { font-size: 36px; color: #D0DAE4; display: block; margin-bottom: 10px; }
-  .p-empty p { font-size: 13px; color: var(--p-muted); }
+  .pk-empty i { font-size: 40px; color: #C8D8E4; display: block; margin-bottom: 12px; }
+  .pk-empty p { font-size: 13px; color: var(--pk-muted); font-weight: 500; }
 
-  /* ── Layout 2 colonnes (sur desktop) ── */
-  .p-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-  .p-col {}
+  /* ══════════════════════════════════
+     LAYOUT DEUX COLONNES
+  ══════════════════════════════════ */
+  .pk-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 
-  @media (max-width: 768px) {
-    .p-kpi-row { grid-template-columns: 1fr 1fr; }
-    .p-two-col { grid-template-columns: 1fr; }
+  /* ══════════════════════════════════
+     RESPONSIVE
+  ══════════════════════════════════ */
+  @media (max-width: 900px) {
+    .pk-cols { grid-template-columns: 1fr; }
+    .pk-kpi-grid { grid-template-columns: 1fr 1fr; }
   }
-  @media (max-width: 480px) {
-    .p-kpi-row { grid-template-columns: 1fr; }
-    .p-banner-text h1 { font-size: 18px; }
-    .p-actions { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 520px) {
+    .pk-kpi-grid { grid-template-columns: 1fr; }
+    .pk-hero-name { font-size: 18px; }
+    .pk-actions { grid-template-columns: repeat(2, 1fr); }
+    .pk-hero-inner { flex-direction: column; align-items: flex-start; }
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="p-page">
+<div class="pk-page">
 
-  <!-- ── Bannière bienvenue ── -->
-  <div class="p-banner">
-    <div class="p-banner-left">
-      <div class="p-banner-avatar">
-        <i class="ti ti-user-heart"></i>
-      </div>
-      <div class="p-banner-text">
-        <h1>Bonjour, {{ request.user.first_name|default:request.user.username }} 👋</h1>
-        <p>Bienvenue dans votre espace personnel ChroniCare. Votre santé, suivie en temps réel.</p>
-      </div>
+  <!-- ══ HERO BANNER ══ -->
+  <div class="pk-hero">
+    <div class="pk-hero-ecg" aria-hidden="true">
+      <svg viewBox="0 0 1200 40" preserveAspectRatio="none" fill="none">
+        <polyline points="0,20 80,20 100,6 120,34 140,3 160,37 180,20 280,20 300,6 320,34 340,3 360,37 380,20 480,20 500,6 520,34 540,3 560,37 580,20 680,20 700,6 720,34 740,3 760,37 780,20 880,20 900,6 920,34 940,3 960,37 980,20 1080,20 1100,6 1120,34 1140,3 1160,37 1180,20 1200,20" stroke="#fff" stroke-width="2"/>
+        <polyline points="1200,20 1280,20 1300,6 1320,34 1340,3 1360,37 1380,20 1480,20 1500,6 1520,34 1540,3 1560,37 1580,20 1680,20 1700,6 1720,34 1740,3 1760,37 1780,20 1880,20 1900,6 1920,34 1940,3 1960,37 1980,20 2080,20 2100,6 2120,34 2140,3 2160,37 2180,20 2280,20 2300,6 2320,34 2340,3 2360,37 2380,20 2400,20" stroke="#fff" stroke-width="2"/>
+      </svg>
     </div>
-    <div class="p-banner-badge">
-      <i class="ti ti-heart-filled"></i>
-      Espace Patient
+    <div class="pk-hero-inner">
+      <div class="pk-hero-left">
+        {% if request.user.photo %}
+          <img src="{{ request.user.photo.url }}"
+               style="width:64px;height:64px;border-radius:20px;object-fit:cover;box-shadow:0 4px 20px rgba(0,0,0,.2);"
+               alt="Photo profil">
+        {% else %}
+          <div class="pk-hero-avatar"><i class="ti ti-user-heart"></i></div>
+        {% endif %}
+        <div>
+          <div class="pk-hero-name">
+            Bonjour, {{ request.user.first_name|default:request.user.username }}
+          </div>
+          <div class="pk-hero-sub">
+            Bienvenue dans votre espace personnel
+            &nbsp;·&nbsp; {% now "l d F Y" %}
+          </div>
+        </div>
+      </div>
+      <div class="pk-hero-right">
+        {% if my_alerts %}
+          <div class="pk-hero-badge badge-alert">
+            <i class="ti ti-alert-triangle"></i>
+            {{ my_alerts|length }} alerte{% if my_alerts|length > 1 %}s{% endif %} active{% if my_alerts|length > 1 %}s{% endif %}
+          </div>
+        {% else %}
+          <div class="pk-hero-badge badge-ok">
+            <i class="ti ti-circle-check"></i>
+            Aucune alerte active
+          </div>
+        {% endif %}
+        <div class="pk-hero-badge">
+          <i class="ti ti-heart-filled"></i>
+          Espace Patient
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ── Alerte si profil non lié ── -->
+  <!-- ══ ALERTE PROFIL NON LIÉ ══ -->
   {% if not profil %}
-  <div class="p-no-profil">
-    <i class="ti ti-alert-triangle"></i>
+  <div class="pk-warning">
+    <i class="ti ti-alert-circle"></i>
     <div>
       <strong>Dossier non lié</strong>
-      Votre compte n'est pas encore associé à un dossier patient.
-      Contactez votre administrateur ou votre médecin traitant.
+      <span>Votre compte n'est pas encore associé à un dossier patient.
+      Contactez votre administrateur ou votre médecin traitant.</span>
     </div>
   </div>
   {% endif %}
 
-  <!-- ── KPI Cards ── -->
-  <div class="p-kpi-row">
-    <div class="p-kpi kpi-rdv">
-      <div class="p-kpi-ico"><i class="ti ti-calendar-event"></i></div>
+  <!-- ══ KPI CARDS ══ -->
+  <div class="pk-kpi-grid">
+    <div class="pk-kpi kk-rdv">
+      <div class="pk-kpi-ico"><i class="ti ti-calendar-event"></i></div>
       <div>
-        <div class="p-kpi-num">{{ my_appointments|length }}</div>
-        <div class="p-kpi-label">Prochains rendez-vous</div>
+        <div class="pk-kpi-num">{{ my_appointments|length }}</div>
+        <div class="pk-kpi-label">Rendez-vous à venir</div>
       </div>
     </div>
-    <div class="p-kpi kpi-alert">
-      <div class="p-kpi-ico"><i class="ti ti-alert-triangle"></i></div>
+    <div class="pk-kpi kk-alert">
+      <div class="pk-kpi-ico"><i class="ti ti-alert-triangle"></i></div>
       <div>
-        <div class="p-kpi-num">{{ my_alerts|length }}</div>
-        <div class="p-kpi-label">Alertes actives</div>
+        <div class="pk-kpi-num">{{ my_alerts|length }}</div>
+        <div class="pk-kpi-label">Alertes actives</div>
       </div>
     </div>
-    <div class="p-kpi kpi-med">
-      <div class="p-kpi-ico"><i class="ti ti-clipboard-text"></i></div>
+    <div class="pk-kpi kk-dossier">
+      <div class="pk-kpi-ico"><i class="ti ti-clipboard-text"></i></div>
       <div>
-        <div class="p-kpi-num">{% if profil %}1{% else %}0{% endif %}</div>
-        <div class="p-kpi-label">Dossier médical</div>
+        <div class="pk-kpi-num">{% if profil %}1{% else %}0{% endif %}</div>
+        <div class="pk-kpi-label">Dossier médical</div>
       </div>
     </div>
   </div>
 
-  <!-- ── CTA Dossier médical ── -->
+  <!-- ══ CTA DOSSIER MÉDICAL ══ -->
   {% if profil %}
-  <a href="{% url 'dossier-medical' profil.id %}" class="p-dossier">
-    <div class="p-dossier-ico"><i class="ti ti-clipboard-text"></i></div>
-    <div class="p-dossier-text">
+  <a href="{% url 'dossier-medical' profil.id %}" class="pk-dossier-cta">
+    <div class="pk-dossier-ico"><i class="ti ti-clipboard-text"></i></div>
+    <div class="pk-dossier-body">
       <h3>Mon dossier médical</h3>
       <p>
-        Historique de suivis, maladies chroniques et indicateurs de santé.
+        Historique des suivis, maladies chroniques et indicateurs de santé.
         {% if profil.medecin_traitant %}
-          Médecin traitant : Dr. {{ profil.medecin_traitant.get_full_name|default:profil.medecin_traitant.username }}
+          Médecin traitant&nbsp;: Dr. {{ profil.medecin_traitant.get_full_name|default:profil.medecin_traitant.username }}
         {% endif %}
       </p>
     </div>
-    <i class="ti ti-chevron-right p-dossier-arrow"></i>
+    <i class="ti ti-arrow-right pk-dossier-arrow"></i>
   </a>
   {% endif %}
 
-  <!-- ── Actions rapides ── -->
-  <div class="p-actions">
-    <a href="{% url 'mes-rendez-vous' %}" class="p-action pa-primary">
-      <div class="p-action-ico" style="background:#C5E8DA;">
-        <i class="ti ti-calendar-event" style="color:#0F6E56;"></i>
+  <!-- ══ ACTIONS RAPIDES ══ -->
+  <div class="pk-actions">
+    <a href="{% url 'mes-rendez-vous' %}" class="pk-action pk-action-primary">
+      <div class="pk-action-ico" style="background:rgba(10,124,92,.15);">
+        <i class="ti ti-calendar-event" style="color:var(--pk-teal);"></i>
       </div>
-      <span>Mes rendez-vous</span>
+      <span class="pk-action-label">Mes rendez-vous</span>
     </a>
-    <a href="{% url 'profile' %}" class="p-action">
-      <div class="p-action-ico" style="background:#EAF2FF;">
-        <i class="ti ti-user-circle" style="color:#1A60C8;"></i>
+    <a href="{% url 'notification-list' %}" class="pk-action">
+      <div class="pk-action-ico" style="background:var(--pk-amber-lt);">
+        <i class="ti ti-bell" style="color:var(--pk-amber);"></i>
       </div>
-      <span>Mon profil</span>
+      <span class="pk-action-label">Notifications</span>
     </a>
-    <a href="{% url 'notification-list' %}" class="p-action">
-      <div class="p-action-ico" style="background:#FEF3E7;">
-        <i class="ti ti-bell" style="color:#B47129;"></i>
+    <a href="{% url 'profile' %}" class="pk-action">
+      <div class="pk-action-ico" style="background:var(--pk-blue-lt);">
+        <i class="ti ti-user-circle" style="color:var(--pk-blue);"></i>
       </div>
-      <span>Notifications</span>
+      <span class="pk-action-label">Mon profil</span>
     </a>
     {% if profil %}
-    <a href="{% url 'patient-detail' profil.id %}" class="p-action">
-      <div class="p-action-ico" style="background:#F3EEFF;">
+    <a href="{% url 'patient-detail' profil.id %}" class="pk-action">
+      <div class="pk-action-ico" style="background:#F3EEFF;">
         <i class="ti ti-id-badge" style="color:#6B46C1;"></i>
       </div>
-      <span>Ma fiche patient</span>
+      <span class="pk-action-label">Ma fiche</span>
     </a>
     {% endif %}
+    <a href="{% url 'appointment-list' %}" class="pk-action">
+      <div class="pk-action-ico" style="background:#E0F9FF;">
+        <i class="ti ti-calendar-plus" style="color:#0891B2;"></i>
+      </div>
+      <span class="pk-action-label">Prendre RDV</span>
+    </a>
   </div>
 
-  <!-- ── Deux colonnes : RDV + Alertes ── -->
-  <div class="p-two-col">
+  <!-- ══ DEUX COLONNES : RDV + ALERTES ══ -->
+  <div class="pk-cols">
 
     <!-- Rendez-vous -->
-    <div class="p-col">
-      <div class="p-section-header">
-        <h2><i class="ti ti-calendar-event" style="color:#0F6E56;"></i> Mes rendez-vous</h2>
-        <a href="{% url 'mes-rendez-vous' %}">Voir tous <i class="ti ti-arrow-right"></i></a>
+    <div>
+      <div class="pk-section-hd">
+        <h2>
+          <i class="ti ti-calendar-event" style="color:var(--pk-teal);"></i>
+          Mes prochains rendez-vous
+        </h2>
+        <a href="{% url 'mes-rendez-vous' %}">Voir tout <i class="ti ti-arrow-right"></i></a>
       </div>
 
       {% if my_appointments %}
-      <div class="p-rdv-list">
+      <div class="pk-rdv-list">
         {% for a in my_appointments %}
-        <div class="p-rdv-card">
-          <div class="p-rdv-date">
-            <div class="day">{{ a.date|date:"d" }}</div>
-            <div class="mon">{{ a.date|date:"M" }}</div>
+        <a href="{% url 'appointment-detail' a.pk %}" class="pk-rdv-card">
+          <div class="pk-rdv-date-blk">
+            <div class="d">{{ a.date|date:"d" }}</div>
+            <div class="m">{{ a.date|date:"M" }}</div>
           </div>
-          <div class="p-rdv-info">
-            <strong>{{ a.motif|default:"Consultation"|truncatechars:45 }}</strong>
+          <div class="pk-rdv-body">
+            <strong>{{ a.motif|default:"Consultation générale"|truncatechars:50 }}</strong>
             <span>
-              {% if a.doctor %}Dr. {{ a.doctor.get_full_name|default:a.doctor.username }}{% endif %}
+              {% if a.doctor %}
+                <i class="ti ti-stethoscope" style="font-size:11px;"></i>
+                Dr. {{ a.doctor.get_full_name|default:a.doctor.username }}
+              {% else %}
+                Médecin à confirmer
+              {% endif %}
             </span>
           </div>
-          <div class="p-rdv-time">
+          <div class="pk-rdv-time">
             <i class="ti ti-clock"></i>
             {{ a.heure|time:"H:i" }}
           </div>
-        </div>
+        </a>
         {% endfor %}
       </div>
       {% else %}
-      <div class="p-empty">
+      <div class="pk-empty">
         <i class="ti ti-calendar-off"></i>
-        <p>Aucun rendez-vous programmé.</p>
+        <p>Aucun rendez-vous planifié.</p>
       </div>
       {% endif %}
     </div>
 
     <!-- Alertes -->
-    <div class="p-col">
-      <div class="p-section-header">
-        <h2><i class="ti ti-alert-triangle" style="color:#C0392B;"></i> Mes alertes</h2>
+    <div>
+      <div class="pk-section-hd">
+        <h2>
+          <i class="ti ti-alert-triangle" style="color:var(--pk-red);"></i>
+          Mes alertes médicales
+        </h2>
       </div>
 
       {% if my_alerts %}
-      <div class="p-alert-list">
+      <div class="pk-alert-list">
         {% for al in my_alerts %}
-        <div class="p-alert-card">
-          <div class="p-alert-ico"><i class="ti ti-alert-triangle"></i></div>
-          <div class="p-alert-body">
-            <strong>{{ al.message|truncatechars:55 }}</strong>
-            <span>{{ al.created_at|date:"d/m/Y" }}</span>
+        <div class="pk-alert-card">
+          <div class="pk-alert-ico"><i class="ti ti-alert-triangle"></i></div>
+          <div class="pk-alert-body">
+            <strong>{{ al.message|truncatechars:60 }}</strong>
+            <span>{{ al.created_at|date:"d/m/Y à H:i" }}</span>
           </div>
-          <span class="p-alert-chip">{{ al.get_alert_type_display }}</span>
+          <span class="pk-alert-chip">{{ al.get_alert_type_display }}</span>
         </div>
         {% endfor %}
       </div>
       {% else %}
-      <div class="p-empty">
-        <i class="ti ti-circle-check" style="color:#C5E8DA;"></i>
-        <p>Aucune alerte active. Tout va bien !</p>
+      <div class="pk-empty">
+        <i class="ti ti-circle-check" style="color:#B6E6D0;"></i>
+        <p>Aucune alerte active — tout va bien !</p>
       </div>
       {% endif %}
     </div>

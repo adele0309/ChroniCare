@@ -3,663 +3,853 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChroniCare — Suivi des maladies chroniques</title>
+  <title>ChroniCare — Plateforme de Suivi Médical</title>
   <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --teal:        #0C6B52;
-      --teal-mid:    #1A9A72;
-      --teal-glow:   #22D49A;
-      --navy:        #070E1B;
-      --navy-mid:    #0C1829;
-      --navy-card:   #101E34;
-      --navy-light:  #142541;
-      --border:      rgba(255,255,255,.07);
-      --text:        #CBD8E8;
-      --muted:       #55718A;
-      --white:       #FFFFFF;
+      --teal:       #0A7C5C;
+      --teal-mid:   #12A87D;
+      --teal-light: #E8F7F2;
+      --teal-glow:  #1FD19A;
+      --navy:       #0D1F3C;
+      --navy-mid:   #162B4D;
+      --slate:      #3D5A73;
+      --text-dark:  #0D1F3C;
+      --text-mid:   #3D5A73;
+      --text-light: #7A99B4;
+      --white:      #FFFFFF;
+      --bg:         #F4F8FB;
+      --border:     #DDE8F0;
+      --radius:     18px;
     }
 
     html, body {
-      height: 100%;
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      font-size: 14px;
-      color: var(--text);
-      background: var(--navy);
+      background: var(--white);
+      color: var(--text-dark);
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
-    /* ── Orbes animés en arrière-plan ── */
-    .bg-orbs {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-    }
-    .bg-orbs span {
-      position: absolute; border-radius: 50%;
-      filter: blur(90px); opacity: .18; animation: orb-float 12s ease-in-out infinite;
-    }
-    .bg-orbs span:nth-child(1) {
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, #0C6B52, transparent);
-      top: -200px; right: -150px; animation-delay: 0s;
-    }
-    .bg-orbs span:nth-child(2) {
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, #1A9A72, transparent);
-      bottom: 100px; left: -100px; animation-delay: -4s;
-    }
-    .bg-orbs span:nth-child(3) {
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, #22D49A, transparent);
-      top: 40%; left: 40%; animation-delay: -8s;
-    }
-    @keyframes orb-float {
-      0%,100% { transform: translateY(0) scale(1); }
-      50%      { transform: translateY(-30px) scale(1.05); }
-    }
+    a { text-decoration: none; }
 
-    /* Grille de fond */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(26,154,114,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(26,154,114,.03) 1px, transparent 1px);
-      background-size: 44px 44px;
-    }
-
-    /* ── Navbar ── */
-    .cc-nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      height: 64px;
+    /* ════════════════════════════════
+       NAVBAR
+    ════════════════════════════════ */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      height: 68px;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 52px;
-      background: rgba(7,14,27,.85);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid var(--border);
+      padding: 0 60px;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(221,232,240,.7);
+      box-shadow: 0 2px 20px rgba(13,31,60,.04);
     }
 
-    .cc-brand {
-      display: flex; align-items: center; gap: 12px;
-      text-decoration: none; color: var(--text);
+    .nav-brand {
+      display: flex; align-items: center; gap: 13px;
     }
-    .cc-brand-icon {
-      width: 42px; height: 42px; border-radius: 12px;
+    .nav-logo {
+      width: 44px; height: 44px; border-radius: 14px;
       background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%);
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 0 0 rgba(12,107,82,.6);
-      animation: brand-pulse 3s ease-in-out infinite;
+      box-shadow: 0 6px 18px rgba(10,124,92,.3);
     }
-    .cc-brand-icon i { font-size: 22px; color: #fff; }
-    .cc-brand-name { font-size: 18px; font-weight: 800; letter-spacing: -.3px; color: #fff; }
-    .cc-brand-sub  { font-size: 10px; color: var(--teal-glow); letter-spacing: 2px; text-transform: uppercase; }
+    .nav-logo i { font-size: 22px; color: #fff; }
+    .nav-brand-name { font-size: 20px; font-weight: 800; color: var(--navy); letter-spacing: -.4px; }
+    .nav-brand-tag {
+      font-size: 9px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--teal-mid);
+      display: block; margin-top: -3px;
+    }
 
-    .cc-nav-cta {
+    .nav-links {
+      display: flex; align-items: center; gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--text-mid);
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+
+    .nav-cta {
       display: flex; align-items: center; gap: 8px;
-      padding: 10px 22px; border-radius: 10px;
+      padding: 11px 26px; border-radius: 12px;
       background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%);
       color: #fff; font-size: 13px; font-weight: 700;
-      text-decoration: none; letter-spacing: .2px;
+      box-shadow: 0 6px 18px rgba(10,124,92,.3);
       transition: transform .15s, box-shadow .15s;
-      box-shadow: 0 4px 16px rgba(12,107,82,.35);
     }
-    .cc-nav-cta:hover {
+    .nav-cta:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(12,107,82,.55);
+      box-shadow: 0 10px 28px rgba(10,124,92,.45);
       color: #fff;
     }
+    .nav-cta i { font-size: 16px; }
 
-    @keyframes brand-pulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(12,107,82,.55); }
-      60%      { box-shadow: 0 0 0 10px rgba(12,107,82,0); }
-    }
-
-    /* ── HERO ── */
-    .cc-hero {
-      position: relative; z-index: 1;
+    /* ════════════════════════════════
+       HERO
+    ════════════════════════════════ */
+    .hero {
       min-height: 100vh;
-      display: flex; align-items: center;
-      padding: 96px 52px 72px;
-      gap: 64px;
+      padding: 110px 60px 0;
+      background: linear-gradient(160deg, #F4F8FB 0%, #EAF5F0 40%, #F4F8FB 100%);
+      position: relative; overflow: hidden;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center; gap: 60px;
     }
 
-    /* ECG décoratif */
-    .cc-ecg {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      height: 52px; opacity: .07; pointer-events: none; overflow: hidden;
+    /* Cercles décoratifs */
+    .hero::before {
+      content: '';
+      position: absolute; top: -180px; right: -180px;
+      width: 560px; height: 560px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(18,168,125,.12) 0%, transparent 70%);
+      pointer-events: none;
     }
-    .cc-ecg svg { width: 200%; height: 100%; animation: ecg-run 7s linear infinite; }
-    @keyframes ecg-run { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-    /* ── Colonne gauche ── */
-    .cc-left { flex: 1; min-width: 0; }
-
-    .cc-eyebrow {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 6px 14px; border-radius: 20px;
-      border: 1px solid rgba(34,212,154,.25);
-      background: rgba(34,212,154,.08);
-      font-size: 11px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--teal-glow);
-      margin-bottom: 26px;
+    .hero::after {
+      content: '';
+      position: absolute; bottom: -100px; left: -100px;
+      width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(10,124,92,.08) 0%, transparent 70%);
+      pointer-events: none;
     }
-    .cc-eyebrow i { font-size: 14px; }
 
-    .cc-headline {
-      font-size: clamp(38px, 5.5vw, 64px);
-      font-weight: 900; line-height: 1.06;
-      color: #fff; letter-spacing: -1.5px;
-      margin-bottom: 12px;
+    /* Grille légère */
+    .hero-grid-bg {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(10,124,92,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10,124,92,.03) 1px, transparent 1px);
+      background-size: 50px 50px;
     }
-    .cc-headline .hl {
-      background: linear-gradient(135deg, var(--teal-mid) 0%, var(--teal-glow) 100%);
+
+    .hero-left { position: relative; z-index: 1; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 16px; border-radius: 30px;
+      border: 1.5px solid rgba(10,124,92,.2);
+      background: rgba(10,124,92,.07);
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 30px;
+    }
+    .hero-badge-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--teal-glow);
+      box-shadow: 0 0 0 3px rgba(31,209,154,.2);
+      animation: dot-pulse 2s infinite;
+    }
+    @keyframes dot-pulse {
+      0%,100% { box-shadow: 0 0 0 3px rgba(31,209,154,.2); }
+      50%      { box-shadow: 0 0 0 7px rgba(31,209,154,0); }
+    }
+
+    .hero-h1 {
+      font-size: clamp(38px, 4.5vw, 60px);
+      font-weight: 900; line-height: 1.08;
+      color: var(--navy); letter-spacing: -1.5px;
+      margin-bottom: 22px;
+    }
+    .hero-h1 .accent {
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-glow) 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
-    .cc-sub {
-      font-size: clamp(15px, 2vw, 18px);
-      color: var(--muted); line-height: 1.65;
-      margin-bottom: 40px; max-width: 480px;
+    .hero-desc {
+      font-size: 17px; color: var(--text-mid);
+      line-height: 1.7; max-width: 480px;
+      margin-bottom: 42px;
     }
-    .cc-sub strong { color: var(--text); }
+    .hero-desc strong { color: var(--navy); }
 
-    /* Features grid */
-    .cc-feats {
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; max-width: 520px;
-    }
-    .cc-feat {
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.07);
-      border-radius: 14px; padding: 18px 14px;
-      transition: border-color .2s, background .2s, transform .2s;
-    }
-    .cc-feat:hover {
-      border-color: rgba(34,212,154,.3);
-      background: rgba(34,212,154,.05);
-      transform: translateY(-2px);
-    }
-    .cc-feat-ico {
-      width: 38px; height: 38px; border-radius: 10px;
-      background: linear-gradient(135deg, rgba(12,107,82,.5), rgba(26,154,114,.3));
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 10px;
-    }
-    .cc-feat-ico i { font-size: 20px; color: var(--teal-glow); }
-    .cc-feat strong { display: block; font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-    .cc-feat span { font-size: 11px; color: var(--muted); line-height: 1.45; }
-
-    /* ── Colonne droite — carte ── */
-    .cc-right { flex-shrink: 0; width: 400px; }
-
-    .cc-card {
-      background: #fff;
-      border-radius: 22px; overflow: hidden;
-      box-shadow:
-        0 40px 100px rgba(0,0,0,.6),
-        0 0 0 1px rgba(34,212,154,.1),
-        inset 0 1px 0 rgba(255,255,255,.1);
-    }
-    .cc-card-top {
-      padding: 28px 30px 24px;
-      background: linear-gradient(135deg, #0C6B52 0%, #1A9A72 100%);
-      position: relative; overflow: hidden;
-    }
-    .cc-card-top::after {
-      content: '';
-      position: absolute; right: -30px; top: -30px;
-      width: 160px; height: 160px; border-radius: 50%;
-      background: rgba(255,255,255,.07);
-    }
-    .cc-card-top::before {
-      content: '';
-      position: absolute; right: 20px; bottom: -20px;
-      width: 100px; height: 100px; border-radius: 50%;
-      background: rgba(255,255,255,.05);
-    }
-    .cc-card-top-logo {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
-    }
-    .cc-card-top-logo span {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: rgba(255,255,255,.2);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .cc-card-top-logo span i { font-size: 20px; color: #fff; }
-    .cc-card-top h2 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 5px; position: relative; z-index: 1; }
-    .cc-card-top p  { font-size: 12px; color: rgba(255,255,255,.75); line-height: 1.6; position: relative; z-index: 1; }
-
-    .cc-card-body { padding: 24px 28px 26px; }
-
-    /* Établissement */
-    .cc-estab {
-      background: #F5FAFB;
-      border: 1px solid #E2EEF5;
-      border-radius: 12px; padding: 13px 16px; margin-bottom: 20px;
-    }
-    .cc-estab-name {
-      font-size: 13px; font-weight: 700; color: #0F2133;
-      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
-    }
-    .cc-estab-name i { color: #0C6B52; font-size: 17px; }
-    .cc-estab-row {
-      display: flex; align-items: center; gap: 7px;
-      font-size: 11px; color: #4A6070; margin-top: 4px;
-    }
-    .cc-estab-row i { color: #A0B4C0; font-size: 13px; width: 14px; text-align: center; }
-
-    /* Bouton connexion */
-    .cc-btn {
-      display: flex; align-items: center; justify-content: center; gap: 9px;
-      width: 100%;
-      background: linear-gradient(135deg, #0C6B52 0%, #1A9A72 100%);
-      color: #fff; border: none; border-radius: 12px;
-      padding: 15px; font-size: 14px; font-weight: 800; letter-spacing: .3px;
-      text-decoration: none; cursor: pointer;
+    .hero-btns { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 15px 32px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%);
+      color: #fff; font-size: 15px; font-weight: 700;
+      box-shadow: 0 8px 24px rgba(10,124,92,.3);
       transition: transform .15s, box-shadow .15s;
-      box-shadow: 0 6px 20px rgba(12,107,82,.35);
-      margin-bottom: 20px;
     }
-    .cc-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(12,107,82,.5);
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 34px rgba(10,124,92,.45);
       color: #fff;
     }
-    .cc-btn i { font-size: 18px; }
+    .btn-primary i { font-size: 18px; }
 
-    /* Séparateur */
-    .cc-sep {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 10px; color: #B0C0CC;
-      text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px;
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 15px 28px; border-radius: 14px;
+      border: 1.5px solid var(--border);
+      color: var(--text-mid); font-size: 14px; font-weight: 600;
+      background: transparent;
+      transition: border-color .2s, color .2s, background .2s;
     }
-    .cc-sep::before, .cc-sep::after { content:''; flex:1; height:1px; background:#E2EAF0; }
-
-    /* Rôles pills */
-    .cc-pills { display: flex; flex-wrap: wrap; gap: 7px; }
-    .cc-pill {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 5px 12px; border-radius: 20px;
-      font-size: 11px; font-weight: 600;
+    .btn-ghost:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: var(--teal-light);
     }
-    .cc-pill i { font-size: 13px; }
+    .btn-ghost i { font-size: 17px; }
 
-    .cc-card-note {
-      margin-top: 18px; text-align: center;
-      font-size: 11px; color: #9AABB8; line-height: 1.55;
-      display: flex; align-items: center; justify-content: center; gap: 5px;
+    .hero-trust {
+      display: flex; align-items: center; gap: 14px;
+      margin-top: 36px; flex-wrap: wrap;
     }
-    .cc-card-note i { font-size: 13px; color: #C0CDD5; }
+    .hero-trust-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: var(--text-light);
+    }
+    .hero-trust-item i { font-size: 16px; color: var(--teal-mid); }
 
-    /* ── Section Stats ── */
-    .cc-stats {
+    /* ── Droite : Dashboard mockup ── */
+    .hero-right {
       position: relative; z-index: 1;
-      display: flex; align-items: stretch;
-      background: rgba(255,255,255,.025);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+      padding-bottom: 60px;
     }
-    .cc-stat {
-      flex: 1; padding: 28px 20px; text-align: center;
-      border-right: 1px solid var(--border);
-      transition: background .2s;
+
+    .mockup-wrapper {
+      position: relative;
     }
-    .cc-stat:last-child { border-right: none; }
-    .cc-stat:hover { background: rgba(255,255,255,.03); }
-    .cc-stat-num {
-      font-size: 30px; font-weight: 900; letter-spacing: -1px;
+
+    .mockup-card {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow:
+        0 30px 80px rgba(13,31,60,.15),
+        0 0 0 1px rgba(221,232,240,.8),
+        inset 0 1px 0 rgba(255,255,255,.8);
+      overflow: hidden;
+    }
+
+    .mockup-topbar {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      padding: 18px 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .mockup-dots { display: flex; gap: 6px; }
+    .mockup-dots span {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,.2);
+    }
+    .mockup-dots span:first-child { background: #FF6060; }
+    .mockup-dots span:nth-child(2) { background: #FFB830; }
+    .mockup-dots span:last-child   { background: #30D158; }
+    .mockup-topbar-title {
+      flex: 1; text-align: center;
+      font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5);
+      letter-spacing: .5px;
+    }
+    .mockup-topbar-status {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 600; color: rgba(31,209,154,.8);
+    }
+    .mockup-topbar-status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal-glow); animation: dot-pulse 2s infinite;
+    }
+
+    .mockup-body { padding: 22px; }
+
+    .mockup-greeting {
+      font-size: 13px; font-weight: 700; color: var(--navy);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .mockup-greeting-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--teal-glow));
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .mockup-greeting-avatar i { font-size: 16px; color: #fff; }
+
+    .mockup-stats {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+      margin-bottom: 16px;
+    }
+    .mockup-stat {
+      border-radius: 12px; padding: 12px 10px; text-align: center;
+    }
+    .mockup-stat-n { font-size: 20px; font-weight: 800; line-height: 1; margin-bottom: 3px; }
+    .mockup-stat-l { font-size: 9px; font-weight: 600; opacity: .65; }
+    .mockup-stat.s1 { background: var(--teal-light); color: var(--teal); }
+    .mockup-stat.s2 { background: #FEF3E7; color: #B47129; }
+    .mockup-stat.s3 { background: #EAF2FF; color: #1A60C8; }
+
+    .mockup-list-title {
+      font-size: 10px; font-weight: 700; color: var(--text-light);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .mockup-list { display: flex; flex-direction: column; gap: 7px; }
+    .mockup-list-item {
+      display: flex; align-items: center; gap: 10px;
+      background: #F8FAFC; border-radius: 10px; padding: 9px 12px;
+    }
+    .mockup-list-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .mockup-list-text { flex: 1; }
+    .mockup-list-text span { display: block; font-size: 10px; font-weight: 600; color: var(--navy); }
+    .mockup-list-text small { font-size: 9px; color: var(--text-light); }
+    .mockup-list-chip {
+      font-size: 8px; font-weight: 700; padding: 2px 7px; border-radius: 6px;
+    }
+
+    /* Badges flottants autour du mockup */
+    .float-badge {
+      position: absolute;
+      background: #fff;
+      border-radius: 14px; padding: 10px 14px;
+      box-shadow: 0 8px 30px rgba(13,31,60,.12), 0 0 0 1px var(--border);
+      display: flex; align-items: center; gap: 9px;
+      font-size: 11px; font-weight: 700; color: var(--navy);
+      white-space: nowrap; z-index: 2;
+    }
+    .float-badge .fb-ico {
+      width: 32px; height: 32px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .float-badge .fb-ico i { font-size: 16px; }
+    .float-badge .fb-sub { font-size: 9px; font-weight: 500; color: var(--text-light); display: block; }
+
+    .fb-alert { bottom: 90px; left: -40px; animation: fb-float 4s ease-in-out infinite; }
+    .fb-rdv   { top: 40px; right: -36px; animation: fb-float 4s ease-in-out infinite .8s; }
+    .fb-safe  { bottom: 20px; right: -30px; animation: fb-float 4s ease-in-out infinite 1.6s; }
+
+    @keyframes fb-float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+
+    /* ════════════════════════════════
+       STATS BAND
+    ════════════════════════════════ */
+    .stats-band {
+      background: var(--navy);
+      padding: 36px 60px;
+      display: flex; align-items: center; justify-content: space-around;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-size: 36px; font-weight: 900; letter-spacing: -1px;
       background: linear-gradient(135deg, var(--teal-mid), var(--teal-glow));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
       line-height: 1; margin-bottom: 6px;
     }
-    .cc-stat-label { font-size: 11px; color: var(--muted); font-weight: 500; line-height: 1.4; }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,.5); font-weight: 500; }
+    .stat-sep { width: 1px; height: 48px; background: rgba(255,255,255,.08); }
 
-    /* ── Section Fonctionnalités ── */
-    .cc-features {
-      position: relative; z-index: 1;
-      padding: 70px 52px;
+    /* ════════════════════════════════
+       FEATURES
+    ════════════════════════════════ */
+    .features {
+      padding: 80px 60px;
+      background: var(--bg);
     }
-    .cc-section-label {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 12px;
-    }
-    .cc-section-label span {
-      display: inline-block; width: 28px; height: 3px;
-      background: linear-gradient(90deg, var(--teal), var(--teal-glow));
-      border-radius: 2px;
-    }
-    .cc-section-label p {
+    .section-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
       font-size: 11px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--teal-glow);
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 14px;
     }
-    .cc-section-title {
-      font-size: clamp(22px, 3vw, 32px); font-weight: 800;
-      color: #fff; margin-bottom: 48px; max-width: 520px; letter-spacing: -.5px;
-      line-height: 1.25;
+    .section-eyebrow::before {
+      content: '';
+      display: block; width: 24px; height: 3px; border-radius: 2px;
+      background: linear-gradient(90deg, var(--teal), var(--teal-glow));
+    }
+    .section-h2 {
+      font-size: clamp(24px, 3vw, 38px); font-weight: 800;
+      color: var(--navy); letter-spacing: -.5px; line-height: 1.2;
+      max-width: 540px; margin-bottom: 52px;
     }
 
-    .cc-features-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    .feat-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
     }
-    .cc-feature-card {
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.07);
-      border-radius: 18px; padding: 26px 22px;
-      transition: transform .2s, border-color .2s, background .2s;
+    .feat-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px 24px;
+      transition: transform .2s, box-shadow .2s, border-color .2s;
+      position: relative; overflow: hidden;
     }
-    .cc-feature-card:hover {
+    .feat-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--teal-glow));
+      opacity: 0; transition: opacity .2s;
+    }
+    .feat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(13,31,60,.1);
+      border-color: rgba(10,124,92,.2);
+    }
+    .feat-card:hover::before { opacity: 1; }
+    .feat-ico {
+      width: 52px; height: 52px; border-radius: 15px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+    }
+    .feat-ico i { font-size: 26px; }
+    .feat-card h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+    .feat-card p  { font-size: 13px; color: var(--text-mid); line-height: 1.65; }
+
+    /* ════════════════════════════════
+       ROLES SECTION
+    ════════════════════════════════ */
+    .roles-section {
+      padding: 70px 60px;
+      background: #fff;
+    }
+    .roles-grid {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px;
+      margin-top: 48px;
+    }
+    .role-card {
+      border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 22px 16px;
+      text-align: center;
+      transition: border-color .2s, transform .15s, box-shadow .15s;
+    }
+    .role-card:hover {
       transform: translateY(-4px);
-      border-color: rgba(34,212,154,.25);
-      background: rgba(34,212,154,.04);
+      box-shadow: 0 10px 28px rgba(13,31,60,.08);
     }
-    .cc-feature-card-ico {
-      width: 48px; height: 48px; border-radius: 14px;
+    .role-ico {
+      width: 52px; height: 52px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 16px;
+      margin: 0 auto 14px;
     }
-    .cc-feature-card-ico i { font-size: 24px; }
-    .cc-feature-card h3 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-    .cc-feature-card p  { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .role-ico i { font-size: 24px; }
+    .role-name { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .role-desc { font-size: 11px; color: var(--text-light); line-height: 1.4; }
 
-    /* ── Bande des rôles ── */
-    .cc-roles-bar {
-      position: relative; z-index: 1;
-      padding: 20px 52px;
-      background: rgba(255,255,255,.015);
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      gap: 40px; flex-wrap: wrap;
+    /* ════════════════════════════════
+       CTA SECTION
+    ════════════════════════════════ */
+    .cta-section {
+      padding: 80px 60px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 50%, #0C3D2B 100%);
+      position: relative; overflow: hidden;
+      text-align: center;
     }
-    .cc-role {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 12px; font-weight: 600; color: var(--muted);
-      transition: color .2s;
+    .cta-section::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(18,168,125,.12) 0%, transparent 65%);
+      pointer-events: none;
     }
-    .cc-role:hover { color: var(--text); }
-    .cc-role i { font-size: 19px; }
+    .cta-section > * { position: relative; z-index: 1; }
+    .cta-section h2 {
+      font-size: clamp(26px, 3.5vw, 44px);
+      font-weight: 900; color: #fff; letter-spacing: -1px;
+      line-height: 1.15; margin-bottom: 18px;
+    }
+    .cta-section h2 .hl {
+      background: linear-gradient(135deg, var(--teal-mid), var(--teal-glow));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .cta-section p {
+      font-size: 16px; color: rgba(255,255,255,.6);
+      max-width: 520px; margin: 0 auto 40px; line-height: 1.6;
+    }
 
-    /* ── Footer ── */
-    .cc-footer {
-      position: relative; z-index: 1;
-      padding: 18px 52px;
+    /* ════════════════════════════════
+       FOOTER
+    ════════════════════════════════ */
+    .footer {
+      background: var(--navy);
+      padding: 24px 60px;
       display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 10px;
-      font-size: 11px; color: var(--muted);
-      border-top: 1px solid var(--border);
+      flex-wrap: wrap; gap: 12px;
+      border-top: 1px solid rgba(255,255,255,.06);
     }
-    .cc-footer-left { display: flex; align-items: center; gap: 20px; }
-    .cc-footer i { font-size: 14px; vertical-align: middle; }
+    .footer-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 700; color: rgba(255,255,255,.7);
+    }
+    .footer-brand-ico {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-mid));
+      display: flex; align-items: center; justify-content: center;
+    }
+    .footer-brand-ico i { font-size: 15px; color: #fff; }
+    .footer-right { font-size: 11px; color: rgba(255,255,255,.35); }
 
-    /* ── Responsive ── */
-    @media (max-width: 1024px) {
-      .cc-features-grid { grid-template-columns: repeat(2, 1fr); }
+    /* ════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════ */
+    @media (max-width: 1100px) {
+      .roles-grid { grid-template-columns: repeat(3, 1fr); }
+      .feat-grid { grid-template-columns: repeat(2, 1fr); }
     }
-    @media (max-width: 960px) {
-      .cc-hero { flex-direction: column; padding: 88px 24px 60px; gap: 40px; }
-      .cc-right { width: 100%; max-width: 460px; margin: 0 auto; }
-      .cc-feats { grid-template-columns: 1fr 1fr; }
-      .cc-nav { padding: 0 24px; }
-      .cc-roles-bar { padding: 18px 24px; gap: 22px; }
-      .cc-footer { padding: 16px 24px; }
-      .cc-features { padding: 48px 24px; }
-      .cc-stats { flex-wrap: wrap; }
-      .cc-stat { min-width: 50%; border-bottom: 1px solid var(--border); }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding: 100px 30px 40px; }
+      .hero-right { display: none; }
+      .nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .stats-band, .features, .roles-section, .cta-section { padding-left: 30px; padding-right: 30px; }
+      .footer { padding: 20px 30px; }
     }
-    @media (max-width: 560px) {
-      .cc-feats { grid-template-columns: 1fr; }
-      .cc-features-grid { grid-template-columns: 1fr; }
-      .cc-stat { min-width: 100%; }
+    @media (max-width: 600px) {
+      .feat-grid { grid-template-columns: 1fr; }
+      .roles-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-sep { display: none; }
+      .stats-band { gap: 30px; }
     }
   </style>
 </head>
 <body>
 
-<!-- Orbes de fond -->
-<div class="bg-orbs" aria-hidden="true">
-  <span></span><span></span><span></span>
-</div>
-
-<!-- ── Navbar ── -->
-<nav class="cc-nav">
-  <a href="/" class="cc-brand">
-    <div class="cc-brand-icon"><i class="ti ti-heart-rate-monitor"></i></div>
+<!-- ═══════════ NAVBAR ═══════════ -->
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <div class="nav-logo"><i class="ti ti-heart-rate-monitor"></i></div>
     <div>
-      <div class="cc-brand-name">ChroniCare</div>
-      <div class="cc-brand-sub">Suivi Médical</div>
+      <div class="nav-brand-name">ChroniCare</div>
+      <span class="nav-brand-tag">Suivi Médical</span>
     </div>
   </a>
-  <a href="{% url 'user-login' %}" class="cc-nav-cta">
+
+  <ul class="nav-links">
+    <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+    <li><a href="#roles">Équipes</a></li>
+    <li><a href="#acces">Accès</a></li>
+  </ul>
+
+  <a href="{% url 'user-login' %}" class="nav-cta">
     <i class="ti ti-login-2"></i> Se connecter
   </a>
 </nav>
 
-<!-- ── Hero ── -->
-<section class="cc-hero">
-
-  <div class="cc-ecg" aria-hidden="true">
-    <svg viewBox="0 0 1200 52" preserveAspectRatio="none" fill="none">
-      <polyline
-        points="0,26 80,26 100,10 120,42 140,6 160,46 180,26 280,26
-                300,10 320,42 340,6 360,46 380,26 480,26 500,10 520,42
-                540,6 560,46 580,26 680,26 700,10 720,42 740,6 760,46
-                780,26 880,26 900,10 920,42 940,6 960,46 980,26 1080,26
-                1100,10 1120,42 1140,6 1160,46 1180,26 1200,26"
-        stroke="#22D49A" stroke-width="2"/>
-      <polyline
-        points="1200,26 1280,26 1300,10 1320,42 1340,6 1360,46 1380,26 1480,26
-                1500,10 1520,42 1540,6 1560,46 1580,26 1680,26 1700,10 1720,42
-                1740,6 1760,46 1780,26 1880,26 1900,10 1920,42 1940,6 1960,46
-                1980,26 2080,26 2100,10 2120,42 2140,6 2160,46 2180,26 2280,26
-                2300,10 2320,42 2340,6 2360,46 2380,26 2400,26"
-        stroke="#22D49A" stroke-width="2"/>
-    </svg>
-  </div>
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="hero-grid-bg" aria-hidden="true"></div>
 
   <!-- Gauche -->
-  <div class="cc-left">
-    <div class="cc-eyebrow">
-      <i class="ti ti-heartbeat"></i>
-      Plateforme Médicale Intelligente
+  <div class="hero-left">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Plateforme Médicale Intégrée
     </div>
 
-    <h1 class="cc-headline">
-      Le suivi<br>
-      <span class="hl">intégré</span><br>
-      des maladies<br>chroniques.
+    <h1 class="hero-h1">
+      Le suivi intelligent<br>
+      des <span class="accent">maladies chroniques</span><br>
+      commence ici.
     </h1>
 
-    <p class="cc-sub">
-      <strong>ChroniCare</strong> centralise le suivi médical, les ordonnances,
-      les analyses et les alertes pour une prise en charge optimale de chaque patient.
+    <p class="hero-desc">
+      <strong>ChroniCare</strong> centralise dossiers patients, prescriptions, analyses
+      de laboratoire et alertes cliniques — pour une prise en charge optimale de chaque patient,
+      à chaque étape de son parcours de soins.
     </p>
 
-    <div class="cc-feats">
-      <div class="cc-feat">
-        <div class="cc-feat-ico"><i class="ti ti-shield-check"></i></div>
-        <strong>Données sécurisées</strong>
-        <span>Accès protégé par rôles et authentification</span>
+    <div class="hero-btns">
+      <a href="{% url 'user-login' %}" class="btn-primary">
+        <i class="ti ti-login-2"></i> Accéder à la plateforme
+      </a>
+      <a href="#fonctionnalites" class="btn-ghost">
+        <i class="ti ti-arrow-down"></i> Découvrir
+      </a>
+    </div>
+
+    <div class="hero-trust">
+      <div class="hero-trust-item">
+        <i class="ti ti-shield-check"></i> Données sécurisées
       </div>
-      <div class="cc-feat">
-        <div class="cc-feat-ico"><i class="ti ti-users-group"></i></div>
-        <strong>Multi-profils</strong>
-        <span>Médecins, infirmiers, pharmaciens, patients</span>
+      <div class="hero-trust-item">
+        <i class="ti ti-server"></i> Hébergement local
       </div>
-      <div class="cc-feat">
-        <div class="cc-feat-ico"><i class="ti ti-activity-heartbeat"></i></div>
-        <strong>Alertes temps réel</strong>
-        <span>Surveillance continue des constantes vitales</span>
+      <div class="hero-trust-item">
+        <i class="ti ti-bell-ringing"></i> Alertes automatiques
       </div>
     </div>
   </div>
 
-  <!-- Droite — carte connexion -->
-  <div class="cc-right">
-    <div class="cc-card">
-      <div class="cc-card-top">
-        <div class="cc-card-top-logo">
-          <span><i class="ti ti-heart-rate-monitor"></i></span>
+  <!-- Droite — mockup tableau de bord -->
+  <div class="hero-right">
+    <div class="mockup-wrapper">
+
+      <!-- Badge flottant : alerte -->
+      <div class="float-badge fb-alert">
+        <div class="fb-ico" style="background:#FDECEA;">
+          <i class="ti ti-alert-triangle" style="color:#C0392B;"></i>
         </div>
-        <h2>Accès à votre espace</h2>
-        <p>Connectez-vous pour accéder à votre tableau de bord personnalisé selon votre rôle.</p>
+        <div>
+          <span>Alerte critique</span>
+          <span class="fb-sub">Glycémie élevée — Patient A.</span>
+        </div>
       </div>
-      <div class="cc-card-body">
 
-        {% if config %}
-        <div class="cc-estab">
-          <div class="cc-estab-name">
-            <i class="ti ti-building-hospital"></i>
-            {{ config.nom_etablissement }}
-          </div>
-          {% if config.email_contact %}
-          <div class="cc-estab-row">
-            <i class="ti ti-mail"></i> {{ config.email_contact }}
-          </div>
-          {% endif %}
-          {% if config.telephone %}
-          <div class="cc-estab-row">
-            <i class="ti ti-phone"></i> {{ config.telephone }}
-          </div>
-          {% endif %}
+      <!-- Badge flottant : rendez-vous -->
+      <div class="float-badge fb-rdv">
+        <div class="fb-ico" style="background:#E8F7F2;">
+          <i class="ti ti-calendar-check" style="color:#0A7C5C;"></i>
         </div>
-        {% endif %}
-
-        <a href="{% url 'user-login' %}" class="cc-btn">
-          <i class="ti ti-login-2"></i> Se connecter
-        </a>
-
-        <div class="cc-sep">accès par rôle</div>
-
-        <div class="cc-pills">
-          <span class="cc-pill" style="background:#E0F5EE;color:#0A5740;">
-            <i class="ti ti-stethoscope"></i> Médecin
-          </span>
-          <span class="cc-pill" style="background:#E5EEF9;color:#0C3E72;">
-            <i class="ti ti-nurse"></i> Infirmier
-          </span>
-          <span class="cc-pill" style="background:#FEF0E0;color:#5A3208;">
-            <i class="ti ti-user-heart"></i> Patient
-          </span>
-          <span class="cc-pill" style="background:#EDE5F7;color:#42277A;">
-            <i class="ti ti-pill"></i> Pharmacien
-          </span>
-          <span class="cc-pill" style="background:#E0F5F8;color:#074F5E;">
-            <i class="ti ti-flask"></i> Labo
-          </span>
-          <span class="cc-pill" style="background:#FCEAEA;color:#6B1C1C;">
-            <i class="ti ti-shield-lock"></i> Admin
-          </span>
+        <div>
+          <span>RDV confirmé</span>
+          <span class="fb-sub">Demain 09h00 — Dr. Martin</span>
         </div>
+      </div>
 
-        <p class="cc-card-note">
-          <i class="ti ti-lock"></i>
-          Accès restreint au personnel autorisé.
-        </p>
+      <!-- Badge flottant : sécurité -->
+      <div class="float-badge fb-safe">
+        <div class="fb-ico" style="background:#E8F7F2;">
+          <i class="ti ti-lock-check" style="color:#0A7C5C;"></i>
+        </div>
+        <div>
+          <span>Accès sécurisé</span>
+          <span class="fb-sub">Session active</span>
+        </div>
+      </div>
+
+      <!-- Dashboard mockup -->
+      <div class="mockup-card">
+        <div class="mockup-topbar">
+          <div class="mockup-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="mockup-topbar-title">chronicare.local — Tableau de bord</div>
+          <div class="mockup-topbar-status">
+            <span class="mockup-topbar-status-dot"></span> En ligne
+          </div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-greeting">
+            <div class="mockup-greeting-avatar">
+              <i class="ti ti-stethoscope"></i>
+            </div>
+            Bonjour, Dr. Camara — Bonne journée
+          </div>
+
+          <div class="mockup-stats">
+            <div class="mockup-stat s1">
+              <div class="mockup-stat-n">24</div>
+              <div class="mockup-stat-l">Patients</div>
+            </div>
+            <div class="mockup-stat s2">
+              <div class="mockup-stat-n">3</div>
+              <div class="mockup-stat-l">RDV du jour</div>
+            </div>
+            <div class="mockup-stat s3">
+              <div class="mockup-stat-n">2</div>
+              <div class="mockup-stat-l">Alertes</div>
+            </div>
+          </div>
+
+          <div class="mockup-list-title">Prochains rendez-vous</div>
+          <div class="mockup-list">
+            <div class="mockup-list-item">
+              <span class="mockup-list-dot" style="background:#0A7C5C;"></span>
+              <div class="mockup-list-text">
+                <span>Diallo Alpha</span>
+                <small>Consultation — Diabète type 2</small>
+              </div>
+              <span class="mockup-list-chip" style="background:#E8F7F2;color:#0A7C5C;">09:00</span>
+            </div>
+            <div class="mockup-list-item">
+              <span class="mockup-list-dot" style="background:#B47129;"></span>
+              <div class="mockup-list-text">
+                <span>Bah Mariama</span>
+                <small>Suivi — HTA</small>
+              </div>
+              <span class="mockup-list-chip" style="background:#FEF3E7;color:#B47129;">11:30</span>
+            </div>
+            <div class="mockup-list-item">
+              <span class="mockup-list-dot" style="background:#1A60C8;"></span>
+              <div class="mockup-list-text">
+                <span>Kouyaté Ibrahim</span>
+                <small>Renouvellement ordonnance</small>
+              </div>
+              <span class="mockup-list-chip" style="background:#EAF2FF;color:#1A60C8;">14:00</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
 </section>
 
-<!-- ── Stats ── -->
-<div class="cc-stats">
-  <div class="cc-stat">
-    <div class="cc-stat-num">6</div>
-    <div class="cc-stat-label">Types de profils<br>utilisateurs</div>
+<!-- ═══════════ STATS BAND ═══════════ -->
+<div class="stats-band">
+  <div class="stat-item">
+    <div class="stat-num">6</div>
+    <div class="stat-label">Rôles utilisateurs</div>
   </div>
-  <div class="cc-stat">
-    <div class="cc-stat-num">100%</div>
-    <div class="cc-stat-label">Données hébergées<br>localement</div>
+  <div class="stat-sep"></div>
+  <div class="stat-item">
+    <div class="stat-num">5+</div>
+    <div class="stat-label">Maladies chroniques suivies</div>
   </div>
-  <div class="cc-stat">
-    <div class="cc-stat-num">24/7</div>
-    <div class="cc-stat-label">Surveillance et<br>alertes automatiques</div>
+  <div class="stat-sep"></div>
+  <div class="stat-item">
+    <div class="stat-num">24/7</div>
+    <div class="stat-label">Surveillance automatique</div>
   </div>
-  <div class="cc-stat">
-    <div class="cc-stat-num">5+</div>
-    <div class="cc-stat-label">Maladies chroniques<br>prises en charge</div>
+  <div class="stat-sep"></div>
+  <div class="stat-item">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Données en local</div>
   </div>
 </div>
 
-<!-- ── Fonctionnalités ── -->
-<section class="cc-features">
-  <div class="cc-section-label">
-    <span></span>
-    <p>Fonctionnalités clés</p>
-  </div>
-  <h2 class="cc-section-title">
-    Tout ce dont votre<br>établissement a besoin
+<!-- ═══════════ FEATURES ═══════════ -->
+<section class="features" id="fonctionnalites">
+  <div class="section-eyebrow">Fonctionnalités clés</div>
+  <h2 class="section-h2">
+    Tout ce dont votre établissement<br>a besoin, dans une seule plateforme.
   </h2>
 
-  <div class="cc-features-grid">
-    <div class="cc-feature-card">
-      <div class="cc-feature-card-ico" style="background:rgba(12,107,82,.15);">
-        <i class="ti ti-clipboard-text" style="color:#22D49A;"></i>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-ico" style="background:#E8F7F2;">
+        <i class="ti ti-clipboard-text" style="color:#0A7C5C;"></i>
       </div>
       <h3>Dossier patient complet</h3>
-      <p>Historique médical, constantes vitales, maladies chroniques et bilans biologiques centralisés.</p>
+      <p>Historique médical, constantes vitales, bilans biologiques et maladies chroniques centralisés dans un dossier unique et structuré.</p>
     </div>
-    <div class="cc-feature-card">
-      <div class="cc-feature-card-ico" style="background:rgba(12,74,124,.2);">
-        <i class="ti ti-calendar-event" style="color:#5EA8FF;"></i>
+    <div class="feat-card">
+      <div class="feat-ico" style="background:#EAF2FF;">
+        <i class="ti ti-calendar-event" style="color:#1A60C8;"></i>
       </div>
       <h3>Gestion des rendez-vous</h3>
-      <p>Planification, rappels automatiques par e-mail et notifications pour patients et médecins.</p>
+      <p>Planification intuitive, vue calendrier et rappels automatiques par e-mail et notifications in-app pour patients et médecins.</p>
     </div>
-    <div class="cc-feature-card">
-      <div class="cc-feature-card-ico" style="background:rgba(107,70,193,.18);">
-        <i class="ti ti-pill" style="color:#B08EFF;"></i>
+    <div class="feat-card">
+      <div class="feat-ico" style="background:#F3EEFF;">
+        <i class="ti ti-pill" style="color:#6B46C1;"></i>
       </div>
       <h3>Pharmacie & Ordonnances</h3>
-      <p>Suivi des prescriptions, gestion des stocks, alertes de rupture et dispensations traçables.</p>
+      <p>Prescriptions traçables, gestion des stocks par lot, alertes de rupture et dispensations horodatées par le pharmacien.</p>
     </div>
-    <div class="cc-feature-card">
-      <div class="cc-feature-card-ico" style="background:rgba(7,77,94,.25);">
-        <i class="ti ti-flask" style="color:#4FCFDF;"></i>
+    <div class="feat-card">
+      <div class="feat-ico" style="background:#E0F9FF;">
+        <i class="ti ti-flask" style="color:#0891B2;"></i>
       </div>
       <h3>Analyses de laboratoire</h3>
-      <p>Saisie des résultats, détection automatique des valeurs anormales et alertes au prescripteur.</p>
+      <p>Saisie des résultats, détection automatique des valeurs hors normes et notification immédiate au médecin prescripteur.</p>
     </div>
-    <div class="cc-feature-card">
-      <div class="cc-feature-card-ico" style="background:rgba(180,40,40,.15);">
-        <i class="ti ti-bell-ringing" style="color:#F87171;"></i>
+    <div class="feat-card">
+      <div class="feat-ico" style="background:#FEF3E7;">
+        <i class="ti ti-bell-ringing" style="color:#B47129;"></i>
       </div>
       <h3>Alertes intelligentes</h3>
-      <p>Escalade automatique des alertes critiques, renouvellements de traitement et notifications.</p>
+      <p>Système à deux niveaux : alertes médicales pour l'équipe soignante et notifications personnalisées pour chaque utilisateur.</p>
     </div>
-    <div class="cc-feature-card">
-      <div class="cc-feature-card-ico" style="background:rgba(180,113,41,.15);">
-        <i class="ti ti-chart-line" style="color:#FDBA74;"></i>
+    <div class="feat-card">
+      <div class="feat-ico" style="background:#FDECEA;">
+        <i class="ti ti-chart-line" style="color:#C0392B;"></i>
       </div>
       <h3>Tableaux de bord</h3>
-      <p>Statistiques en temps réel, évolution des constantes et indicateurs de santé par rôle.</p>
+      <p>Statistiques temps réel, évolution des constantes vitales et indicateurs de santé personnalisés par rôle et par profil.</p>
     </div>
   </div>
 </section>
 
-<!-- ── Bande des rôles ── -->
-<div class="cc-roles-bar">
-  <span class="cc-role"><i class="ti ti-stethoscope" style="color:#1A9A72;"></i> Médecin</span>
-  <span class="cc-role"><i class="ti ti-nurse" style="color:#5EA8FF;"></i> Infirmier</span>
-  <span class="cc-role"><i class="ti ti-user-heart" style="color:#FDBA74;"></i> Patient</span>
-  <span class="cc-role"><i class="ti ti-pill" style="color:#B08EFF;"></i> Pharmacien</span>
-  <span class="cc-role"><i class="ti ti-flask" style="color:#4FCFDF;"></i> Laboratoire</span>
-  <span class="cc-role"><i class="ti ti-shield-lock" style="color:#F87171;"></i> Administrateur</span>
-</div>
+<!-- ═══════════ ROLES ═══════════ -->
+<section class="roles-section" id="roles">
+  <div class="section-eyebrow">Équipes médicales</div>
+  <h2 class="section-h2">
+    Une plateforme adaptée<br>à chaque acteur de santé.
+  </h2>
 
-<!-- ── Footer ── -->
-<footer class="cc-footer">
-  <div class="cc-footer-left">
-    <span>© ChroniCare {% now "Y" %} — Tous droits réservés</span>
-    {% if config and config.nom_etablissement %}
-    <span>
-      <i class="ti ti-building-hospital" style="color:#22D49A;"></i>
-      {{ config.nom_etablissement }}
-    </span>
-    {% endif %}
+  <div class="roles-grid">
+    <div class="role-card" style="border-color:rgba(10,124,92,.2);">
+      <div class="role-ico" style="background:#E8F7F2;">
+        <i class="ti ti-stethoscope" style="color:#0A7C5C;"></i>
+      </div>
+      <div class="role-name">Médecin</div>
+      <div class="role-desc">Suivi clinique, prescriptions & alertes patients</div>
+    </div>
+    <div class="role-card" style="border-color:rgba(26,96,200,.2);">
+      <div class="role-ico" style="background:#EAF2FF;">
+        <i class="ti ti-nurse" style="color:#1A60C8;"></i>
+      </div>
+      <div class="role-name">Infirmier</div>
+      <div class="role-desc">Saisie des constantes & surveillance des patients</div>
+    </div>
+    <div class="role-card" style="border-color:rgba(107,70,193,.2);">
+      <div class="role-ico" style="background:#F3EEFF;">
+        <i class="ti ti-pill" style="color:#6B46C1;"></i>
+      </div>
+      <div class="role-name">Pharmacien</div>
+      <div class="role-desc">Dispensations, stocks & ordonnances</div>
+    </div>
+    <div class="role-card" style="border-color:rgba(8,145,178,.2);">
+      <div class="role-ico" style="background:#E0F9FF;">
+        <i class="ti ti-flask" style="color:#0891B2;"></i>
+      </div>
+      <div class="role-name">Laborantin</div>
+      <div class="role-desc">Résultats biologiques & validation des analyses</div>
+    </div>
+    <div class="role-card" style="border-color:rgba(180,113,41,.2);">
+      <div class="role-ico" style="background:#FEF3E7;">
+        <i class="ti ti-user-heart" style="color:#B47129;"></i>
+      </div>
+      <div class="role-name">Patient</div>
+      <div class="role-desc">Suivi personnel & consultations de dossier</div>
+    </div>
+    <div class="role-card" style="border-color:rgba(192,57,43,.2);">
+      <div class="role-ico" style="background:#FDECEA;">
+        <i class="ti ti-shield-lock" style="color:#C0392B;"></i>
+      </div>
+      <div class="role-name">Administrateur</div>
+      <div class="role-desc">Gestion des utilisateurs & configuration système</div>
+    </div>
   </div>
-  <span>Plateforme de suivi des maladies chroniques</span>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="cta-section" id="acces">
+  <h2>
+    Prêt à améliorer le suivi<br>
+    de vos <span class="hl">patients chroniques</span> ?
+  </h2>
+  <p>
+    Connectez-vous à votre espace ChroniCare et accédez immédiatement
+    à tous vos outils médicaux, organisés selon votre rôle.
+  </p>
+
+  {% if config %}
+  <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 20px;margin-bottom:36px;font-size:13px;color:rgba(255,255,255,.8);">
+    <i class="ti ti-building-hospital" style="color:var(--teal-glow);font-size:18px;"></i>
+    <span><strong style="color:#fff;">{{ config.nom_etablissement }}</strong>
+    {% if config.email_contact %} — {{ config.email_contact }}{% endif %}</span>
+  </div>
+  <br>
+  {% endif %}
+
+  <a href="{% url 'user-login' %}" class="btn-primary" style="font-size:16px;padding:17px 38px;box-shadow:0 10px 32px rgba(10,124,92,.4);">
+    <i class="ti ti-login-2"></i> Se connecter maintenant
+  </a>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="footer">
+  <div class="footer-brand">
+    <div class="footer-brand-ico"><i class="ti ti-heart-rate-monitor"></i></div>
+    ChroniCare &nbsp;—&nbsp; © {% now "Y" %}
+  </div>
+  <div class="footer-right">
+    Plateforme de suivi des maladies chroniques
+    {% if config and config.nom_etablissement %} · {{ config.nom_etablissement }}{% endif %}
+  </div>
 </footer>
 
 </body>

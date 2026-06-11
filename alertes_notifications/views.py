@@ -54,7 +54,7 @@ class AlertViewSet(viewsets.ModelViewSet):
         return Alert.objects.none()
 
     @action(detail=True, methods=['post'])
-    def resolve(self, request):
+    def resolve(self, request, pk=None):
         alert = self.get_object()
         if alert.is_resolved:
             return Response({'detail': 'Alerte déjà résolue.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -62,7 +62,7 @@ class AlertViewSet(viewsets.ModelViewSet):
         return Response({'detail': 'Alerte résolue.'})
 
     @action(detail=True, methods=['post'])
-    def acknowledge(self, request):
+    def acknowledge(self, request, pk=None):
         alert = self.get_object()
         if alert.is_acknowledged:
             return Response({'detail': 'Alerte déjà accusée.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -117,6 +117,7 @@ def monitoring_dashboard(request):
     notifs_recentes     = Notification.objects.filter(
         user=request.user, is_read=False
     ).order_by('-created_at')[:8]
+    nb_notifs_non_lues  = Notification.objects.filter(user=request.user, is_read=False).count()
 
     return render(request, 'alertes_notifications/monitoring_dashboard.html', {
         'alertes_critiques':    alertes_critiques,
@@ -124,6 +125,7 @@ def monitoring_dashboard(request):
         'alertes_total':        alertes_total,
         'alertes_recentes':     alertes_recentes,
         'notifs_recentes':      notifs_recentes,
+        'nb_notifs_non_lues':   nb_notifs_non_lues,
     })
 
 
