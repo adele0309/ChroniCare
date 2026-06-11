@@ -10,4 +10,4 @@ psycopg[binary]
 gunicorn==21.2.0
 whitenoise==6.6.0
 weasyprint==62.3
-reportlab==4.2.2
+reportlab== 4.5.0
