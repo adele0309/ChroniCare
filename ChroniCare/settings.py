@@ -151,8 +151,9 @@ DEFAULT_FROM_EMAIL = f'ChroniCare <{_email_user}>' if _email_user else 'ChroniCa
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-# WhiteNoise : compression + cache busting via manifest
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WhiteNoise : compression seule, sans manifest (tolérant aux fichiers manquants).
+# Upgrader vers CompressedManifestStaticFilesStorage une fois le cache busting souhaité.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
