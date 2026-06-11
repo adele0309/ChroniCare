@@ -78,14 +78,15 @@ services:
       - key: CLOUDINARY_URL
         sync: false
 
+  # ── Redis (broker Celery) ──
+  - type: redis
+    name: chronicare-redis
+    plan: free
+    ipAllowList: []  # accessible uniquement depuis les services Render
+
 databases:
   # ── PostgreSQL ──
   - name: chronicare-db
     databaseName: chronicare
     user: chronicare_user
     plan: free
-
-  # ── Redis ──
-  - name: chronicare-redis
-    plan: free
-    type: redis
