@@ -4,7 +4,7 @@ services:
     name: chronicare
     env: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn ChroniCare.wsgi:application --bind 0.0.0.0:$PORT --workers 2"
+    startCommand: "python manage.py migrate --no-input && gunicorn ChroniCare.wsgi:application --bind 0.0.0.0:$PORT --workers 2"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: ChroniCare.settings
